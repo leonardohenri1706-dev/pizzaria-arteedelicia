@@ -141,8 +141,12 @@ async function loginWithGoogle() {
     });
 
     if (error) {
-      console.error('Erro no login com Google:', error.message);
-      alert('Erro ao conectar com o Google: ' + error.message);
+      console.warn('Supabase Auth Info:', error);
+      if (error.message && error.message.includes('not enabled')) {
+        alert('⚠️ O provedor Google ainda não foi ativado no painel do Supabase.\n\nPara ativar: acesse seu painel do Supabase -> Authentication -> Providers -> Ative o "Google".\n\nEnquanto isso, você pode preencher seus dados diretamente no formulário abaixo!');
+      } else {
+        alert('Aviso do Google Login: ' + error.message);
+      }
     }
   } catch (err) {
     console.error('Falha ao autenticar com o Google:', err);
