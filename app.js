@@ -278,17 +278,15 @@ function scrollToSection(id) {
   window.scrollTo({ top: elementTop - offset, behavior: 'smooth' });
 }
 
-// Category Filter
+// Category Filter — filtra pizzas e rola para a seção #cardapio unificada
 function filterCategory(category) {
   currentCategory = category;
   document.querySelectorAll('.cat-pill').forEach(btn => btn.classList.remove('active'));
   document.getElementById(`btn-${category}`)?.classList.add('active');
   renderPizzaGrid();
 
-  // Aguarda o browser repintar o DOM antes de calcular posição
   requestAnimationFrame(() => {
-    const targetId = document.getElementById('cardapio') ? 'cardapio' : 'destaques';
-    scrollToSection(targetId);
+    scrollToSection('cardapio');
     setTimeout(() => {
       if (typeof gsap !== 'undefined') {
         gsap.fromTo('.pizza-card-clean',
@@ -300,7 +298,7 @@ function filterCategory(category) {
   });
 }
 
-// Smooth animated scroll to all pizzas in catalog
+// Scroll animado para todas as pizzas no cardápio
 function scrollToCatalogAndAnimate(category = 'all') {
   currentCategory = category;
   document.querySelectorAll('.cat-pill').forEach(btn => btn.classList.remove('active'));
@@ -308,8 +306,7 @@ function scrollToCatalogAndAnimate(category = 'all') {
   renderPizzaGrid();
 
   requestAnimationFrame(() => {
-    const targetId = document.getElementById('cardapio') ? 'cardapio' : 'destaques';
-    scrollToSection(targetId);
+    scrollToSection('cardapio');
     setTimeout(() => {
       if (typeof gsap !== 'undefined') {
         gsap.fromTo('.pizza-card-clean',

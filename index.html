@@ -249,40 +249,9 @@
     </div>
   </section>
 
-  <!-- Category Filter Quick Bar ("EXPLORE OUR MENU") -->
-  <section class="category-explore-section main-container" id="cardapio">
-    <div class="explore-header">
-      <div class="explore-title">
-        <span>NOSSO CARDÁPIO</span>
-        <h2 class="fold-text-effect" data-text="ESCOLHA SEUS SABORES FAVORITOS" data-split="char" data-hinge="top">ESCOLHA SEUS SABORES FAVORITOS</h2>
-      </div>
-      <button class="btn-view-all" onclick="filterCategory('all')">VER TODAS AS PIZZAS <i class="fa-solid fa-arrow-right"></i></button>
-    </div>
-
-    <div class="category-pills-bar">
-      <button class="cat-pill active" id="btn-all" onclick="filterCategory('all')">
-        <span class="pill-icon">🍕</span>
-        <span>TODAS AS PIZZAS</span>
-      </button>
-      <button class="cat-pill" id="btn-classica" onclick="filterCategory('classica')">
-        <span class="pill-icon">🌟</span>
-        <span>PIZZAS CLÁSSICAS</span>
-      </button>
-      <button class="cat-pill" id="btn-especial" onclick="filterCategory('especial')">
-        <img src="assets/camarao.jpg" alt="Camarão" class="pill-img-icon">
-        <span>PIZZAS ESPECIAIS</span>
-      </button>
-      <button class="cat-pill" id="btn-doce" onclick="filterCategory('doce')">
-        <span class="pill-icon">🍫</span>
-        <span>PIZZAS DOCES</span>
-      </button>
-    </div>
-  </section>
-
   <!-- Feature Cards / Categories Grid -->
   <section class="promo-cards-section main-container">
     <div class="promo-grid">
-      <!-- Card 1 -->
       <div class="promo-card dark-card">
         <div class="promo-content">
           <span class="promo-tag">TRADIÇÃO DA CASA</span>
@@ -292,8 +261,6 @@
         </div>
         <img src="assets/calabresa.jpg" alt="Pizzas Clássicas">
       </div>
-
-      <!-- Card 2 (Pizzas Especiais com Imagem de Camarão) -->
       <div class="promo-card red-card">
         <div class="promo-content">
           <span class="promo-tag">SELEÇÃO DA CASA</span>
@@ -303,8 +270,6 @@
         </div>
         <img src="assets/camarao.jpg" alt="Pizzas Especiais Camarão">
       </div>
-
-      <!-- Card 3 -->
       <div class="promo-card dark-card">
         <div class="promo-content">
           <span class="promo-tag">DO SEU JEITO</span>
@@ -332,16 +297,39 @@
     </div>
   </section>
 
-  <!-- Popular Pizzas Grid Section (Estilo Cards Brancos da Referência) -->
-  <section class="popular-pizzas-section main-container" id="destaques">
+  <!-- ========== CARDÁPIO UNIFICADO: Filtros + Grid de Pizzas ========== -->
+  <section class="cardapio-unificado main-container" id="cardapio">
+
+    <!-- Cabeçalho do Cardápio -->
     <div class="section-title-bar">
       <div>
-        <span class="sub-heading">QUALIDADE & SABOR</span>
-        <h2 class="main-heading fold-text-effect" data-text="CARDÁPIO OFICIAL DE PIZZAS" data-split="char" data-hinge="top">CARDÁPIO OFICIAL DE PIZZAS</h2>
+        <span class="sub-heading">NOSSO CARDÁPIO</span>
+        <h2 class="main-heading fold-text-effect" data-text="ESCOLHA SEUS SABORES FAVORITOS" data-split="char" data-hinge="top">ESCOLHA SEUS SABORES FAVORITOS</h2>
       </div>
+      <button class="btn-view-all" onclick="filterCategory('all')">VER TODAS AS PIZZAS <i class="fa-solid fa-arrow-right"></i></button>
     </div>
 
-    <!-- Pizza Cards Render Grid -->
+    <!-- Pills de Categoria -->
+    <div class="category-pills-bar">
+      <button class="cat-pill active" id="btn-all" onclick="filterCategory('all')">
+        <span class="pill-icon">🍕</span>
+        <span>TODAS AS PIZZAS</span>
+      </button>
+      <button class="cat-pill" id="btn-classica" onclick="filterCategory('classica')">
+        <span class="pill-icon">🌟</span>
+        <span>PIZZAS CLÁSSICAS</span>
+      </button>
+      <button class="cat-pill" id="btn-especial" onclick="filterCategory('especial')">
+        <img src="assets/camarao.jpg" alt="Camarão" class="pill-img-icon">
+        <span>PIZZAS ESPECIAIS</span>
+      </button>
+      <button class="cat-pill" id="btn-doce" onclick="filterCategory('doce')">
+        <span class="pill-icon">🍫</span>
+        <span>PIZZAS DOCES</span>
+      </button>
+    </div>
+
+    <!-- Grid de Pizzas (renderizado pelo app.js) -->
     <div class="popular-grid" id="pizzaGrid">
       <!-- Dynamically populated via app.js -->
     </div>

@@ -390,6 +390,22 @@ body {
   padding: calc(30px + 70px + 2rem) 0 1.5rem 0;
 }
 
+/* Seção unificada do cardápio (filtros + grid de pizzas) */
+.cardapio-unificado {
+  padding-top: 2.5rem;
+  padding-bottom: 3rem;
+}
+
+.cardapio-unificado .category-pills-bar {
+  margin-top: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.cardapio-unificado .popular-grid {
+  margin-top: 0;
+}
+
+
 .hero-editorial-card {
   background: radial-gradient(circle at 85% 50%, rgba(201, 42, 42, 0.28) 0%, rgba(22, 19, 17, 0.98) 65%), linear-gradient(135deg, #161311 0%, #241812 100%);
   border-radius: var(--radius-lg);
