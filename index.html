@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Restaurante e Pizzaria Arte & Delícia | Cardápio Oficial</title>
+  <meta name="description" content="Restaurante e Pizzaria Arte & Delícia. Pizzas artesanais preparadas na hora com ingredientes frescos. Atendimento com Simonny.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800;900&family=Italiana&family=Outfit:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Top Utility Bar -->
+  <div class="top-bar">
+    <div class="main-container top-bar-content">
+      <div class="top-info">
+        <span class="status-live-pill"><span class="live-indicator"></span> Aberto Hoje • 18:00 às 23:30</span>
+        <span class="d-none-mobile"><i class="fa-solid fa-location-dot"></i> Beira Rio • Itaiçaba - CE</span>
+      </div>
+      <div class="top-banner-text">
+        <span>✨ Mais de 13 anos de tradição e sabor servindo Itaiçaba com carinho!</span>
+      </div>
+      <div class="top-socials d-none-mobile">
+        <a href="https://wa.me/5588993345987" target="_blank"><i class="fa-brands fa-whatsapp"></i> (88) 99334-5987</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Navbar -->
+  <nav class="navbar">
+    <a href="#" class="logo-container">
+      <div class="logo-icon">🍕</div>
+      <div class="logo-text">
+        <h1 class="shiny-text">ARTE & DELÍCIA</h1>
+        <p>Restaurante & Pizzaria</p>
+      </div>
+    </a>
+    
+    <div class="nav-links d-none-mobile">
+      <a href="#inicio">INÍCIO</a>
+      <a href="#sobre">SOBRE NÓS</a>
+      <a href="#cardapio">CARDÁPIO</a>
+      <a href="#destaques">DESTAQUES</a>
+      <a href="#depoimentos">DEPOIMENTOS</a>
+      <a href="#reservas">RESERVAS</a>
+      <a href="#contato">CONTATO</a>
+    </div>
+
+    <div class="nav-actions">
+      <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="searchInput" placeholder="Buscar pizza ou ingrediente..." oninput="filterPizzas()">
+      </div>
+      
+      <button class="btn-account magnetic-btn" id="navAccountBtn" onclick="openAuthModal()">
+        <i class="fa-solid fa-circle-user"></i>
+        <span class="d-none-mobile" id="navAccountText">Minha Conta</span>
+      </button>
+
+      <button class="btn-cart magnetic-btn" onclick="openCartModal()">
+        <i class="fa-solid fa-cart-shopping"></i>
+        <span class="d-none-mobile">Carrinho</span>
+        <span class="cart-count" id="cartCount">0</span>
+      </button>
+
+      <button class="btn-order-nav magnetic-btn" onclick="scrollToCatalogAndAnimate('all')">PEDIR AGORA</button>
+
+      <button class="btn-menu-toggle" id="menuToggleBtn" onclick="toggleMobileDrawer(true)">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Navigation Drawer -->
+  <div class="mobile-drawer-overlay" id="drawerOverlay" onclick="toggleMobileDrawer(false)"></div>
+  <div class="mobile-drawer" id="mobileDrawer">
+    <div class="drawer-header">
+      <div class="logo-container">
+        <div class="logo-icon">🍕</div>
+        <div class="logo-text">
+          <h1 class="shiny-text">ARTE & DELÍCIA</h1>
+          <p>Restaurante & Pizzaria</p>
+        </div>
+      </div>
+      <button class="btn-drawer-close" onclick="toggleMobileDrawer(false)">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <div class="drawer-links">
+      <a href="#inicio" onclick="toggleMobileDrawer(false)">INÍCIO</a>
+      <a href="#sobre" onclick="toggleMobileDrawer(false)">SOBRE NÓS</a>
+      <a href="#cardapio" onclick="toggleMobileDrawer(false)">CARDÁPIO</a>
+      <a href="#destaques" onclick="toggleMobileDrawer(false)">DESTAQUES</a>
+      <a href="#depoimentos" onclick="toggleMobileDrawer(false)">DEPOIMENTOS</a>
+      <a href="#reservas" onclick="toggleMobileDrawer(false)">RESERVAS</a>
+      <a href="#contato" onclick="toggleMobileDrawer(false)">CONTATO</a>
+      <a href="javascript:void(0)" onclick="toggleMobileDrawer(false); openAuthModal();" style="color: var(--accent-gold);"><i class="fa-solid fa-user"></i> MINHA CONTA & ENDEREÇO</a>
+    </div>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero-banner-wrapper" id="inicio">
+    <div class="main-container">
+      <div class="hero-editorial-card">
+        <div class="hero-text-side">
+          <span class="hero-cursive-eyebrow">~ Mais de 13 Anos de Tradição em Itaiçaba ~</span>
+          <h1 class="hero-main-title">A VERDADEIRA PIZZA ARTESANAL QUE <span>CONQUISTOU ITAIÇABA</span></h1>
+          <p class="hero-description">Há mais de 13 anos preparando pizzas inesquecíveis com massas de fermentação lenta, queijos nobres e aquele carinho especial das receitas da <strong>Simonny</strong>. Venha saborear no nosso salão acolhedor ou receba quentinha na sua porta!</p>
+
+          <div class="hero-actions">
+            <button class="btn-hero-primary magnetic-btn" onclick="scrollToCatalogAndAnimate('all')">
+              QUERO MONTAR MINHA PIZZA <i class="fa-solid fa-pizza-slice"></i>
+            </button>
+            <a href="https://wa.me/5588993345987?text=Olá%20Simonny,%20gostaria%20de%20fazer%20um%20pedido%20na%20Arte%20&%20Delícia!" target="_blank" class="btn-hero-secondary magnetic-btn">
+              <i class="fa-brands fa-whatsapp"></i> Falar com Simonny
+            </a>
+          </div>
+
+          <div class="hero-location-line">
+            <span><i class="fa-solid fa-location-dot"></i> Beira Rio • Itaiçaba - CE</span>
+            <span class="divider-dot">•</span>
+            <span><i class="fa-regular fa-clock"></i> Aberto Hoje das 18:00 às 23:30</span>
+          </div>
+        </div>
+
+        <div class="hero-image-side">
+          <div class="hero-large-photo-frame">
+            <img src="assets/nordestina.jpg" alt="Pizzaria Arte & Delícia" class="hero-large-pizza-img">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hero Feature Badges Bar -->
+    <div class="main-container hero-features-bar">
+      <div class="feature-item">
+        <div class="feat-icon-box"><i class="fa-solid fa-crown"></i></div>
+        <div>
+          <strong>+13 ANOS DE HISTÓRIA</strong>
+          <span>Tradição e carinho na nossa terra</span>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feat-icon-box"><i class="fa-solid fa-wheat-awn"></i></div>
+        <div>
+          <strong>FERMENTAÇÃO NATURAL</strong>
+          <span>Massa leve, crocante e de fácil digestão</span>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feat-icon-box"><i class="fa-solid fa-cheese"></i></div>
+        <div>
+          <strong>INGREDIENTES NOBRES</strong>
+          <span>Mussarela especial e recheios fartos</span>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feat-icon-box"><i class="fa-solid fa-heart"></i></div>
+        <div>
+          <strong>RECEITAS DA SIMONNY</strong>
+          <span>Feitas na hora com amor para você</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Seção Sobre Nós & Apresentação do Espaço -->
+  <section class="about-section main-container" id="sobre">
+    <div class="about-grid">
+      <!-- Coluna 1: História e Tradição -->
+      <div class="about-content">
+        <span class="sub-heading">HISTÓRIA, AMOR & TRADIÇÃO</span>
+        <h2 class="main-heading fold-text-effect" data-text="MAIS DE 13 ANOS DE HISTÓRIA" data-split="word" data-hinge="top">MAIS DE 13 ANOS DE HISTÓRIA</h2>
+        <p class="about-lead">Mais do que uma pizzaria, somos o ponto de encontro de amigos e famílias em Itaiçaba há mais de 13 anos, onde cada receita é preparada artesanalmente com paixão pela <strong>Simonny</strong>.</p>
+        
+        <p class="about-desc">
+          Nossas massas passam por um processo rigoroso de fermentação lenta e natural, garantindo leveza digestiva e bordas deliciosamente crocantes. Do molho de tomate fresco aos queijos e recheios nobres como Carne de Sol Nordestina, Frango Catupiry e Camarão Especial, cada pizza é feita na hora com o padrão inconfundível da Arte & Delícia.
+        </p>
+
+        <div class="about-badges">
+          <div class="about-badge-item">
+            <i class="fa-solid fa-crown"></i>
+            <div>
+              <strong>+13 Anos de Tradição</strong>
+              <span>A pizzaria mais querida de Itaiçaba</span>
+            </div>
+          </div>
+          <div class="about-badge-item">
+            <i class="fa-solid fa-wheat-awn"></i>
+            <div>
+              <strong>Massa Artesanal Leve</strong>
+              <span>Fermentação lenta e natural</span>
+            </div>
+          </div>
+          <div class="about-badge-item">
+            <i class="fa-solid fa-heart"></i>
+            <div>
+              <strong>Espaço Aconchegante</strong>
+              <span>Ambiente familiar no Beira Rio</span>
+            </div>
+          </div>
+          <div class="about-badge-item">
+            <i class="fa-brands fa-whatsapp"></i>
+            <div>
+              <strong>Atendimento da Simonny</strong>
+              <span>Carinho e atenção em cada pedido</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="about-cta-bar">
+          <button class="btn-hero-primary magnetic-btn" onclick="scrollToCatalogAndAnimate('all')">VER CARDÁPIO COMPLETO <i class="fa-solid fa-arrow-right"></i></button>
+          <a href="https://wa.me/5588993345987?text=Olá%20Simonny,%20gostaria%20de%20saber%20mais%20sobre%20a%20pizzaria!" target="_blank" class="btn-hero-secondary magnetic-btn"><i class="fa-brands fa-whatsapp"></i> FALAR COM A SIMONNY</a>
+        </div>
+      </div>
+
+      <!-- Coluna 2: Apresentação do Espaço com Vídeo Real -->
+      <div class="about-media-side">
+        <div class="video-container-card">
+          <div class="video-header-badge">
+            <span class="pulse-dot"></span>
+            <span>CONHEÇA NOSSO ESPAÇO</span>
+          </div>
+          <video class="about-video-player" src="assets/espaco_pizzaria.mp4" controls autoplay muted loop playsinline poster="assets/hero.jpg"></video>
+          <div class="video-footer-info">
+            <div class="video-info-text">
+              <strong>Espaço Amplo & Aconchegante no Beira Rio</strong>
+              <p>Venha saborear sua pizza favorita com amigos e família!</p>
+            </div>
+            <a href="#reservas" class="btn-video-res magnetic-btn">GARANTIR MESA</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Category Filter Quick Bar ("EXPLORE OUR MENU") -->
+  <section class="category-explore-section main-container" id="cardapio">
+    <div class="explore-header">
+      <div class="explore-title">
+        <span>NOSSO CARDÁPIO</span>
+        <h2 class="fold-text-effect" data-text="ESCOLHA SEUS SABORES FAVORITOS" data-split="char" data-hinge="top">ESCOLHA SEUS SABORES FAVORITOS</h2>
+      </div>
+      <button class="btn-view-all" onclick="filterCategory('all')">VER TODAS AS PIZZAS <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+
+    <div class="category-pills-bar">
+      <button class="cat-pill active" id="btn-all" onclick="filterCategory('all')">
+        <span class="pill-icon">🍕</span>
+        <span>TODAS AS PIZZAS</span>
+      </button>
+      <button class="cat-pill" id="btn-classica" onclick="filterCategory('classica')">
+        <span class="pill-icon">🌟</span>
+        <span>PIZZAS CLÁSSICAS</span>
+      </button>
+      <button class="cat-pill" id="btn-especial" onclick="filterCategory('especial')">
+        <img src="assets/camarao.jpg" alt="Camarão" class="pill-img-icon">
+        <span>PIZZAS ESPECIAIS</span>
+      </button>
+      <button class="cat-pill" id="btn-doce" onclick="filterCategory('doce')">
+        <span class="pill-icon">🍫</span>
+        <span>PIZZAS DOCES</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- Feature Cards / Categories Grid -->
+  <section class="promo-cards-section main-container">
+    <div class="promo-grid">
+      <!-- Card 1 -->
+      <div class="promo-card dark-card">
+        <div class="promo-content">
+          <span class="promo-tag">TRADIÇÃO DA CASA</span>
+          <h3>PIZZAS CLÁSSICAS</h3>
+          <p>Mussarela farta, Calabresa crocante, Portuguesa com ovos selecionados e Marguerita aromática.</p>
+          <a href="#cardapio" onclick="filterCategory('classica')" class="btn-promo">ESCOLHER CLÁSSICA <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+        <img src="assets/calabresa.jpg" alt="Pizzas Clássicas">
+      </div>
+
+      <!-- Card 2 (Pizzas Especiais com Imagem de Camarão) -->
+      <div class="promo-card red-card">
+        <div class="promo-content">
+          <span class="promo-tag">SELEÇÃO DA CASA</span>
+          <h3>PIZZAS ESPECIAIS</h3>
+          <p>Camarão fresco, Carne de Sol Nordestina, 4 Queijos nobres e Frango Catupiry original.</p>
+          <a href="#cardapio" onclick="filterCategory('especial')" class="btn-promo">VER ESPECIAIS <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+        <img src="assets/camarao.jpg" alt="Pizzas Especiais Camarão">
+      </div>
+
+      <!-- Card 3 -->
+      <div class="promo-card dark-card">
+        <div class="promo-content">
+          <span class="promo-tag">DO SEU JEITO</span>
+          <h3>MEIO A MEIO & 3 SABORES</h3>
+          <p>Ficou na dúvida? Combine 2 sabores na M e G ou monte até 3 sabores diferentes na GG!</p>
+          <a href="#cardapio" onclick="scrollToCatalogAndAnimate('all')" class="btn-promo">MONTAR MINHA PIZZA <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+        <img src="assets/promo_weekend.jpg" alt="Pizza Meio a Meio">
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Banner de Pedido Rápido -->
+  <section class="cta-banner-section main-container">
+    <div class="cta-banner-card">
+      <div class="cta-banner-content">
+        <span class="cta-badge">🔥 DELIVERY RÁPIDO & QUENTINHO</span>
+        <h2>BATEU AQUELA VONTADE DE UMA PIZZA INCRÍVEL?</h2>
+        <p>Não passe vontade hoje! Escolha seus sabores favoritos, monte meio a meio e receba tudo quentinho com a rapidez e o carinho do atendimento da Simonny.</p>
+        <div class="cta-buttons-group">
+          <button class="btn-cta-gold magnetic-btn" onclick="scrollToCatalogAndAnimate('all')">ESCOLHER NO CARDÁPIO <i class="fa-solid fa-pizza-slice"></i></button>
+          <a href="https://wa.me/5588993345987?text=Olá%20Simonny,%20quero%20fazer%20um%20pedido%20agora!" target="_blank" class="btn-cta-whatsapp magnetic-btn"><i class="fa-brands fa-whatsapp"></i> PEDIR AGORA NO WHATSAPP</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Popular Pizzas Grid Section (Estilo Cards Brancos da Referência) -->
+  <section class="popular-pizzas-section main-container" id="destaques">
+    <div class="section-title-bar">
+      <div>
+        <span class="sub-heading">QUALIDADE & SABOR</span>
+        <h2 class="main-heading fold-text-effect" data-text="CARDÁPIO OFICIAL DE PIZZAS" data-split="char" data-hinge="top">CARDÁPIO OFICIAL DE PIZZAS</h2>
+      </div>
+    </div>
+
+    <!-- Pizza Cards Render Grid -->
+    <div class="popular-grid" id="pizzaGrid">
+      <!-- Dynamically populated via app.js -->
+    </div>
+  </section>
+
+  <!-- Seção de Depoimentos com Carrossel Automático -->
+  <section class="testimonials-section main-container" id="depoimentos">
+    <div class="section-title-bar text-center">
+      <span class="sub-heading">AVALIAÇÕES REAIS</span>
+      <h2 class="main-heading fold-text-effect" data-text="A EXPERIÊNCIA DOS CLIENTES" data-split="word" data-hinge="top">A EXPERIÊNCIA DOS CLIENTES</h2>
+      <p class="testimonials-subtitle">Confira o que nossos clientes dizem sobre o sabor, rapidez e o atendimento carinhoso da Simonny.</p>
+    </div>
+
+    <div class="testimonials-carousel-wrapper" id="testimonialsCarousel">
+      <div class="testimonials-track" id="testimonialsTrack">
+        <!-- Card 1 -->
+        <div class="testimonial-slide">
+          <div class="testimonial-card">
+            <div class="test-stars">
+              <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+            </div>
+            <p class="test-text">"A melhor pizzaria da região! A pizza de Carne de Sol (Nordestina) é divina e a massa é super leve. O atendimento com a Simonny pelo WhatsApp é rápido e muito atencioso."</p>
+            <div class="test-user">
+              <div class="user-avatar"><i class="fa-solid fa-user"></i></div>
+              <div class="user-info">
+                <strong>Mariana Santos</strong>
+                <span>Beira Rio • Itaiçaba - CE</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="testimonial-slide">
+          <div class="testimonial-card">
+            <div class="test-stars">
+              <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+            </div>
+            <p class="test-text">"Sempre peço a pizza Meio a Meio de Calabresa com Frango Catupiry. A pizza chega quentinha e no tempo combinado. Ingredientes de altíssima qualidade!"</p>
+            <div class="test-user">
+              <div class="user-avatar"><i class="fa-solid fa-user"></i></div>
+              <div class="user-info">
+                <strong>Carlos Eduardo</strong>
+                <span>Centro • Itaiçaba - CE</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="testimonial-slide">
+          <div class="testimonial-card">
+            <div class="test-stars">
+              <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+            </div>
+            <p class="test-text">"Ambiente muito aconchegante para ir com a família. Fizemos uma comemoração de aniversário lá e a Simonny organizou tudo com muito carinho. Nota 10!"</p>
+            <div class="test-user">
+              <div class="user-avatar"><i class="fa-solid fa-user"></i></div>
+              <div class="user-info">
+                <strong>Beatriz Lima</strong>
+                <span>Itaiçaba - CE</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="testimonial-slide">
+          <div class="testimonial-card">
+            <div class="test-stars">
+              <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+            </div>
+            <p class="test-text">"A pizza Especial de Camarão é espetacular! Massa crocante por fora e macia por dentro. O espaço físico da pizzaria é maravilhoso e muito agradável."</p>
+            <div class="test-user">
+              <div class="user-avatar"><i class="fa-solid fa-user"></i></div>
+              <div class="user-info">
+                <strong>Lucas Ferreira</strong>
+                <span>Beira Rio • Itaiçaba - CE</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="testimonial-slide">
+          <div class="testimonial-card">
+            <div class="test-stars">
+              <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+            </div>
+            <p class="test-text">"Excelente custo-benefício e rapidez na entrega. A borda recheada de Catupiry original é o diferencial. Viramos clientes fiéis da Arte & Delícia!"</p>
+            <div class="test-user">
+              <div class="user-avatar"><i class="fa-solid fa-user"></i></div>
+              <div class="user-info">
+                <strong>Juliana Ramos</strong>
+                <span>Itaiçaba - CE</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controles do Carrossel -->
+      <div class="carousel-nav-bar">
+        <button class="carousel-btn prev" onclick="prevTestimonial()" aria-label="Depoimento Anterior"><i class="fa-solid fa-chevron-left"></i></button>
+        <div class="carousel-dots" id="carouselDots"></div>
+        <button class="carousel-btn next" onclick="nextTestimonial()" aria-label="Próximo Depoimento"><i class="fa-solid fa-chevron-right"></i></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- "WHY CHOOSE ARTE & DELÍCIA?" 6 Feature Icons Grid -->
+  <section class="why-choose-section main-container">
+    <div class="why-header">
+      <span>DIFERENCIAIS & QUALIDADE</span>
+      <h2 class="fold-text-effect" data-text="POR QUE A ARTE & DELÍCIA É A FAVORITA DE ITAIÇABA?" data-split="word" data-hinge="top">POR QUE A ARTE & DELÍCIA É A FAVORITA DE ITAIÇABA?</h2>
+    </div>
+
+    <div class="why-grid">
+      <div class="why-box">
+        <div class="why-icon"><i class="fa-solid fa-crown"></i></div>
+        <h4>+13 ANOS DE TRADIÇÃO</h4>
+        <p>Mais de uma década servindo com amor e excelência as famílias de Itaiçaba.</p>
+      </div>
+
+      <div class="why-box">
+        <div class="why-icon"><i class="fa-solid fa-wheat-awn"></i></div>
+        <h4>MASSA FRESCA & LEVE</h4>
+        <p>Massa artesanal de fermentação lenta: sabor inigualável e digestão leve.</p>
+      </div>
+
+      <div class="why-box">
+        <div class="why-icon"><i class="fa-solid fa-cheese"></i></div>
+        <h4>INGREDIENTES NOBRES</h4>
+        <p>Farta camada de queijo selecionado e recheios preparados no capricho.</p>
+      </div>
+
+      <div class="why-box">
+        <div class="why-icon"><i class="fa-solid fa-motorcycle"></i></div>
+        <h4>DELIVERY RÁPIDO</h4>
+        <p>Sua pizza chega quentinha e com a crocância perfeita na sua porta.</p>
+      </div>
+
+      <div class="why-box">
+        <div class="why-icon"><i class="fa-solid fa-utensils"></i></div>
+        <h4>SABORES EXCLUSIVOS</h4>
+        <p>Receitas consagradas como Carne de Sol Nordestina e Camarão Especial.</p>
+      </div>
+
+      <div class="why-box">
+        <div class="why-icon"><i class="fa-brands fa-whatsapp"></i></div>
+        <h4>ATENDIMENTO DA SIMONNY</h4>
+        <p>Atenção especial e carinho em cada detalhe do seu pedido.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Reservation Section for Customer Events -->
+  <section class="reservation-section main-container" id="reservas">
+    <div class="reservation-card-box">
+      <div class="res-header">
+        <span class="sub-heading">VIVA MOMENTOS ESPECIAIS</span>
+        <h2 class="fold-text-effect" data-text="RESERVE SUA MESA PARA ANIVERSÁRIOS & COMEMORAÇÕES" data-split="word" data-hinge="top">RESERVE SUA MESA PARA ANIVERSÁRIOS & COMEMORAÇÕES</h2>
+        <p>Reúna quem você ama no nosso espaço aconchegante no Beira Rio! A Simonny cuida de todos os detalhes para sua noite ser inesquecível.</p>
+      </div>
+
+      <form id="reservationForm" onsubmit="handleReservationSubmit(event)" class="res-form-grid">
+        <div class="form-input">
+          <label>Seu Nome Completo</label>
+          <input type="text" id="resName" required placeholder="Como podemos te chamar?">
+        </div>
+        <div class="form-input">
+          <label>WhatsApp / Telefone</label>
+          <input type="tel" id="resPhone" required placeholder="(88) 98888-7777">
+        </div>
+        <div class="form-input">
+          <label>Qtd. de Pessoas</label>
+          <select id="resGuests">
+            <option value="2 pessoas">Mesa para 2 Pessoas (Casal)</option>
+            <option value="4 pessoas">Mesa para 4 Pessoas (Família)</option>
+            <option value="6 pessoas">Mesa para 6 Pessoas</option>
+            <option value="8+ pessoas">Mesa para 8+ Pessoas (Grupo/Aniversário)</option>
+          </select>
+        </div>
+        <div class="form-input">
+          <label>Data Desejada</label>
+          <input type="date" id="resDate" required>
+        </div>
+        <div class="form-input">
+          <label>Horário Previsto</label>
+          <input type="time" id="resTime" required value="19:30">
+        </div>
+        
+        <button type="submit" class="btn-res-submit">
+          SOLICITAR RESERVA COM A SIMONNY <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Fale com a Simonny / Newsletter Section -->
+  <section class="newsletter-banner-section main-container">
+    <div class="newsletter-card">
+      <div class="news-icon"><i class="fa-brands fa-whatsapp"></i></div>
+      <div class="news-text">
+        <h3>TEM DÚVIDAS OU QUER UM PEDIDO PERSONALIZADO?</h3>
+        <p>Fale diretamente com a Simonny pelo WhatsApp: <strong>(88) 99334-5987</strong>. Estamos prontos para te atender!</p>
+      </div>
+      <div class="news-action">
+        <a href="https://wa.me/5588993345987?text=Olá%20Simonny,%20estou%20no%20site%20e%20gostaria%20de%20fazer%20um%20pedido!" target="_blank" class="btn-news-whatsapp">
+          FALAR NO WHATSAPP <i class="fa-solid fa-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer (5 Columns matching reference) -->
+  <footer class="site-footer" id="contato">
+    <div class="main-container footer-top-grid">
+      <!-- Col 1: Brand -->
+      <div class="footer-brand-col">
+        <div class="footer-logo">
+          <span class="logo-icon-sm">🍕</span>
+          <h3>ARTE & DELÍCIA</h3>
+        </div>
+        <p>Restaurante & Pizzaria Arte & Delícia. Mais de 13 anos de tradição, amor e dedicação servindo as melhores pizzas artesanais de Itaiçaba.</p>
+        <div class="footer-social-icons">
+          <a href="https://wa.me/5588993345987" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
+          <a href="#"><i class="fa-brands fa-instagram"></i></a>
+        </div>
+      </div>
+
+      <!-- Col 2: Quick Links -->
+      <div class="footer-links-col">
+        <h4>NAVEGAÇÃO</h4>
+        <ul>
+          <li><a href="#inicio">Início</a></li>
+          <li><a href="#cardapio">Cardápio</a></li>
+          <li><a href="#destaques">Destaques</a></li>
+          <li><a href="#reservas">Reservas</a></li>
+        </ul>
+      </div>
+
+      <!-- Col 3: Menu -->
+      <div class="footer-links-col">
+        <h4>CARDÁPIO</h4>
+        <ul>
+          <li><a href="#cardapio" onclick="filterCategory('classica')">Pizzas Clássicas</a></li>
+          <li><a href="#cardapio" onclick="filterCategory('especial')">Pizzas Especiais</a></li>
+          <li><a href="#cardapio" onclick="filterCategory('doce')">Pizzas Doces</a></li>
+        </ul>
+      </div>
+
+      <!-- Col 4: Contact & Hours -->
+      <div class="footer-contact-col">
+        <h4>CONTATO & HORÁRIO</h4>
+        <p><i class="fa-brands fa-whatsapp"></i> (88) 99334-5987 (Simonny)</p>
+        <p><i class="fa-regular fa-clock"></i> 18:00 às 23:30 (Diariamente)</p>
+        <p><i class="fa-solid fa-location-dot"></i> Beira Rio • Itaiçaba - CE</p>
+      </div>
+
+      <!-- Col 5: Payment Methods -->
+      <div class="footer-payments-col">
+        <h4>PAGAMENTO ACEITO</h4>
+        <div class="payment-badges">
+          <span class="pay-badge">PIX</span>
+          <span class="pay-badge">CARTÃO</span>
+          <span class="pay-badge">DINHEIRO</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom-bar main-container">
+      <p>© 2026 Restaurante e Pizzaria Arte & Delícia. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+
+  <!-- Floating Mobile Cart Bar -->
+  <div class="floating-cart-bar" id="floatingCartBar" onclick="openCartModal()">
+    <div class="floating-info">
+      <span class="floating-icon">🛒</span>
+      <span class="floating-count" id="floatCount">0 itens</span>
+    </div>
+    <div class="floating-total">
+      <span id="floatTotal">R$ 0,00</span>
+      <i class="fa-solid fa-arrow-right"></i>
+    </div>
+  </div>
+
+  <!-- Pizza Customizer Modal -->
+  <div class="modal-overlay" id="customizerModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modalPizzaTitle">Nome da Pizza</h3>
+        <button class="btn-close" onclick="closeCustomizerModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      
+      <div class="modal-body">
+        <p class="modal-ingredients" id="modalIngredients">Ingredientes...</p>
+        
+        <div class="option-title"><i class="fa-solid fa-ruler-combined"></i> Escolha o Tamanho:</div>
+        <div class="size-selector" id="sizeSelector">
+          <!-- Dynamically populated sizes -->
+        </div>
+
+        <!-- Divisão de Sabores -->
+        <div class="flavor-division-section">
+          <div class="option-title"><i class="fa-solid fa-pizza-slice"></i> Divisão de Sabores:</div>
+          <div class="flavor-division-tabs" id="flavorDivisionTabs">
+            <button type="button" class="btn-flavor-tab active" id="tab1Flavor" onclick="setFlavorCount(1)">1 Sabor (Inteira)</button>
+            <button type="button" class="btn-flavor-tab" id="tab2Flavors" onclick="setFlavorCount(2)">2 Sabores (Meio a Meio)</button>
+            <button type="button" class="btn-flavor-tab" id="tab3Flavors" onclick="setFlavorCount(3)" style="display: none;">3 Sabores (1/3 cada)</button>
+          </div>
+          <p class="flavor-division-hint" id="flavorDivisionHint">O valor final da pizza será calculado pela média dos sabores escolhidos.</p>
+        </div>
+
+        <!-- Seletor 2º Sabor -->
+        <div class="additional-flavor-group" id="secondFlavorGroup" style="display: none; margin-top: 1rem;">
+          <label style="font-size: 0.82rem; font-weight: 700; color: #fff; display: block; margin-bottom: 0.4rem;">
+            <i class="fa-solid fa-circle-dot" style="color: var(--accent-gold);"></i> 2º Sabor da Pizza:
+          </label>
+          <select class="select-input" id="secondFlavorSelect" onchange="updateCustomizerTotal()"></select>
+        </div>
+
+        <!-- Seletor 3º Sabor (Apenas GG) -->
+        <div class="additional-flavor-group" id="thirdFlavorGroup" style="display: none; margin-top: 1rem;">
+          <label style="font-size: 0.82rem; font-weight: 700; color: #fff; display: block; margin-bottom: 0.4rem;">
+            <i class="fa-solid fa-circle-dot" style="color: var(--accent-yellow);"></i> 3º Sabor da Pizza (Exclusivo GG):
+          </label>
+          <select class="select-input" id="thirdFlavorSelect" onchange="updateCustomizerTotal()"></select>
+        </div>
+
+        <div class="form-group">
+          <label>Observações / Modificações (ex: sem cebola, borda caprichada)</label>
+          <input type="text" class="form-control" id="pizzaNotes" placeholder="Digite aqui suas observações...">
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <div class="total-display">
+          <span>Valor Total:</span>
+          <strong id="modalTotalPrice">R$ 0,00</strong>
+        </div>
+        <button class="btn-primary" onclick="addCustomizedPizzaToCart()">
+          <i class="fa-solid fa-cart-plus"></i> Adicionar ao Carrinho
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cart & Checkout Modal -->
+  <div class="modal-overlay" id="cartModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Seu Carrinho de Compras</h3>
+        <button class="btn-close" onclick="closeCartModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="modal-body">
+        <div id="cartItemsList">
+          <!-- Dynamically populated cart items -->
+        </div>
+
+        <div class="checkout-form-section" style="margin-top: 1.5rem; border-top: 1px solid var(--border-dark); padding-top: 1.5rem;">
+          <div class="saved-account-alert" id="savedAccountAlert" style="display:none;"></div>
+
+          <div class="option-title"><i class="fa-solid fa-user"></i> Seus Dados para Contato:</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Seu Nome *</label>
+              <input type="text" class="form-control" id="cartCustomerName" placeholder="Ex: João Silva" required>
+            </div>
+            <div class="form-group">
+              <label>WhatsApp / Telefone *</label>
+              <input type="tel" class="form-control" id="cartCustomerPhone" placeholder="(88) 99999-9999" required>
+            </div>
+          </div>
+
+          <div class="option-title"><i class="fa-solid fa-motorcycle"></i> Tipo de Pedido:</div>
+          <div class="order-type-tabs">
+            <button type="button" class="btn-cart-type active" id="btnTypeDelivery" onclick="setOrderType('delivery')"><i class="fa-solid fa-truck-fast"></i> Entrega (Delivery)</button>
+            <button type="button" class="btn-cart-type" id="btnTypePickup" onclick="setOrderType('pickup')"><i class="fa-solid fa-store"></i> Retirar no Balcão</button>
+          </div>
+
+          <div id="deliveryAddressGroup">
+            <div class="form-group">
+              <label>Rua / Avenida e Número *</label>
+              <input type="text" class="form-control" id="deliveryStreet" placeholder="Ex: Rua São Pedro, 150">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Bairro e Ponto de Referência *</label>
+                <input type="text" class="form-control" id="deliveryNeighborhood" placeholder="Ex: Centro, próx. à praça (Itaiçaba)">
+              </div>
+              <div class="form-group">
+                <label>Complemento (Opcional)</label>
+                <input type="text" class="form-control" id="deliveryComplement" placeholder="Ex: Casa / Apto 102">
+              </div>
+            </div>
+          </div>
+
+          <div class="option-title"><i class="fa-solid fa-wallet"></i> Forma de Pagamento:</div>
+          <div class="form-group">
+            <select class="select-input" id="paymentMethod" onchange="toggleChangeBox(this.value)">
+              <option value="Pix">📱 Pix (Chave Pix no WhatsApp)</option>
+              <option value="Cartão de Crédito / Débito na Entrega">💳 Cartão na Entrega (Maquininha)</option>
+              <option value="Dinheiro">💵 Dinheiro (Precisa de troco?)</option>
+            </select>
+          </div>
+
+          <!-- Caixa de Troco Condicional -->
+          <div class="change-box-container" id="changeBoxContainer" style="display: none;">
+            <div class="change-box-content">
+              <label><i class="fa-solid fa-coins"></i> Precisa de troco?</label>
+              <div class="troco-options">
+                <label class="radio-label">
+                  <input type="radio" name="needChangeRadio" value="nao" checked onchange="toggleTrocoInput(false)">
+                  <span>Não preciso de troco</span>
+                </label>
+                <label class="radio-label">
+                  <input type="radio" name="needChangeRadio" value="sim" onchange="toggleTrocoInput(true)">
+                  <span>Preciso de troco</span>
+                </label>
+              </div>
+              <div id="trocoAmountGroup" style="display: none; margin-top: 0.8rem;">
+                <label style="font-size: 0.82rem; color: var(--text-muted);">Troco para quanto?</label>
+                <input type="text" class="form-control" id="changeForAmount" placeholder="Ex: 50, 100, 200...">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-top: 1rem;">
+            <label><i class="fa-regular fa-comment-dots"></i> Observações Gerais do Pedido</label>
+            <input type="text" class="form-control" id="cartGeneralNotes" placeholder="Ex: Tocar campainha / sem talheres...">
+          </div>
+
+          <!-- Opção de Salvar Endereço e Dados -->
+          <div class="save-profile-toggle-box">
+            <label class="checkbox-save-profile">
+              <input type="checkbox" id="cartSaveProfileCheck" checked>
+              <span><i class="fa-solid fa-cloud-arrow-up"></i> Lembrar e salvar meus dados e endereço para os próximos pedidos</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <div class="total-display">
+          <span>Total do Pedido:</span>
+          <strong id="cartTotalPrice">R$ 0,00</strong>
+        </div>
+        <button class="btn-primary" onclick="sendOrderToWhatsApp()">
+          <i class="fa-brands fa-whatsapp"></i> Finalizar no WhatsApp com Simonny
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Cadastro / Minha Conta Opcional -->
+  <div class="modal-overlay" id="authModal">
+    <div class="modal-card auth-modal-card">
+      <div class="modal-header">
+        <div class="auth-header-title">
+          <i class="fa-solid fa-address-card"></i>
+          <div>
+            <h3>Minha Conta & Endereço</h3>
+            <p>Deixe seus dados salvos para pedir com 1 clique!</p>
+          </div>
+        </div>
+        <button class="btn-close" onclick="closeAuthModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="auth-notice-card">
+          <i class="fa-solid fa-shield-halved"></i>
+          <span>Seus dados ficam salvos de forma segura no seu navegador para agilizar seus pedidos na Pizzaria Arte & Delícia.</span>
+        </div>
+
+        <form id="authProfileForm" onsubmit="saveUserProfile(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nome Completo *</label>
+              <input type="text" class="form-control" id="profileName" placeholder="Ex: Maria Silva" required>
+            </div>
+            <div class="form-group">
+              <label>WhatsApp / Telefone *</label>
+              <input type="tel" class="form-control" id="profilePhone" placeholder="(88) 98888-7777" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Rua / Avenida e Número *</label>
+            <input type="text" class="form-control" id="profileStreet" placeholder="Ex: Rua das Flores, 120" required>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Bairro e Ponto de Referência *</label>
+              <input type="text" class="form-control" id="profileNeighborhood" placeholder="Ex: Centro, próx. à Praça da Matriz" required>
+            </div>
+            <div class="form-group">
+              <label>Complemento (Opcional)</label>
+              <input type="text" class="form-control" id="profileComplement" placeholder="Ex: Casa / Apto 101">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Forma de Pagamento Preferida</label>
+            <select class="select-input" id="profilePaymentPref">
+              <option value="Pix">📱 Pix (Chave Pix no WhatsApp)</option>
+              <option value="Cartão de Crédito / Débito na Entrega">💳 Cartão na Entrega (Maquininha)</option>
+              <option value="Dinheiro">💵 Dinheiro</option>
+            </select>
+          </div>
+
+          <div class="auth-actions">
+            <button type="submit" class="btn-primary auth-save-btn">
+              <i class="fa-solid fa-floppy-disk"></i> Salvar Meus Dados
+            </button>
+            <button type="button" class="btn-secondary auth-clear-btn" id="btnClearProfile" onclick="clearUserProfile()" style="display: none;">
+              <i class="fa-solid fa-trash-can"></i> Limpar Meus Dados
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Botão Flutuante de WhatsApp -->
+  <a href="https://wa.me/5588993345987?text=Olá%20Simonny,%20gostaria%20de%20fazer%20um%20pedido%20ou%20tirar%20uma%20dúvida!" target="_blank" class="floating-whatsapp-btn" aria-label="Falar no WhatsApp">
+    <div class="whatsapp-tooltip">Fale com a Simonny! 🍕</div>
+    <i class="fa-brands fa-whatsapp"></i>
+  </a>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabaseClient.js" charset="UTF-8"></script>
+  <script src="data.js" charset="UTF-8"></script>
+  <script src="app.js" charset="UTF-8"></script>
+</body>
+</html>
