@@ -572,7 +572,6 @@ function closeCartModal() {
 
 function renderCartItems() {
   const container = document.getElementById('cartItemsList');
-  const totalPriceEl = document.getElementById('cartTotalPrice');
   if (!container) return;
 
   if (cart.length === 0) {
@@ -583,12 +582,9 @@ function renderCartItems() {
         <span style="font-size:0.8rem;">Adicione pizzas saborosas do cardápio para continuar!</span>
       </div>
     `;
-    if (totalPriceEl) totalPriceEl.innerText = 'R$ 0,00';
+    updateDeliveryFee();
     return;
   }
-
-  const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  if (totalPriceEl) totalPriceEl.innerText = `R$ ${totalPrice.toFixed(2).replace('.', ',')}`;
 
   const sizeLabels = {
     'P': 'Broto (P - 4 fatias)',
@@ -622,6 +618,74 @@ function renderCartItems() {
       </div>
     `;
   }).join('');
+
+  updateDeliveryFee();
+}
+
+function getDeliveryFee() {
+  if (orderType !== 'delivery') return 0;
+
+  const regionSelect = document.getElementById('deliveryRegion');
+  const neighborhood = document.getElementById('deliveryNeighborhood')?.value.toLowerCase() || '';
+  const street = document.getElementById('deliveryStreet')?.value.toLowerCase() || '';
+
+  if (regionSelect && (regionSelect.value === 'brito' || regionSelect.value === 'boca_do_forno')) {
+    return 2.00;
+  }
+
+  if (neighborhood.includes('brito') || neighborhood.includes('boca do forno') ||
+      street.includes('brito') || street.includes('boca do forno')) {
+    return 2.00;
+  }
+
+  return 0.00;
+}
+
+function updateDeliveryFee() {
+  const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const fee = getDeliveryFee();
+  const grandTotal = subtotal + fee;
+
+  const subtotalEl = document.getElementById('cartSubtotalPrice');
+  const feeEl = document.getElementById('cartDeliveryFeePrice');
+  const feeLine = document.getElementById('deliveryFeeLine');
+  const grandTotalEl = document.getElementById('cartTotalPrice');
+  const floatTotalEl = document.getElementById('floatTotal');
+
+  if (subtotalEl) subtotalEl.innerText = `R$ ${subtotal.toFixed(2).replace('.', ',')}`;
+
+  if (feeEl) {
+    if (orderType === 'pickup') {
+      feeEl.innerText = 'Não se aplica';
+      feeEl.style.color = 'var(--text-muted)';
+      if (feeLine) feeLine.style.display = 'none';
+    } else {
+      if (feeLine) feeLine.style.display = 'flex';
+      if (fee > 0) {
+        feeEl.innerText = `R$ ${fee.toFixed(2).replace('.', ',')} (Brito / Boca do Forno)`;
+        feeEl.style.color = 'var(--accent-yellow)';
+      } else {
+        feeEl.innerText = 'Grátis (Itaiçaba Sede)';
+        feeEl.style.color = '#51cf66';
+      }
+    }
+  }
+
+  if (grandTotalEl) grandTotalEl.innerText = `R$ ${grandTotal.toFixed(2).replace('.', ',')}`;
+  if (floatTotalEl) floatTotalEl.innerText = `R$ ${grandTotal.toFixed(2).replace('.', ',')}`;
+}
+
+function detectNeighborhoodFee() {
+  const neighborhood = document.getElementById('deliveryNeighborhood')?.value.toLowerCase() || '';
+  const regionSelect = document.getElementById('deliveryRegion');
+  if (regionSelect) {
+    if (neighborhood.includes('brito')) {
+      regionSelect.value = 'brito';
+    } else if (neighborhood.includes('boca do forno') || neighborhood.includes('forno')) {
+      regionSelect.value = 'boca_do_forno';
+    }
+  }
+  updateDeliveryFee();
 }
 
 function changeQuantity(itemId, delta) {
@@ -653,6 +717,7 @@ function setOrderType(type) {
     btnDel?.classList.remove('active');
     if (addrGroup) addrGroup.style.display = 'none';
   }
+  updateDeliveryFee();
 }
 
 function toggleChangeBox(method) {
@@ -676,6 +741,9 @@ function toggleTrocoInput(show) {
 // Exportar funções globais
 window.toggleChangeBox = toggleChangeBox;
 window.toggleTrocoInput = toggleTrocoInput;
+window.updateDeliveryFee = updateDeliveryFee;
+window.detectNeighborhoodFee = detectNeighborhoodFee;
+window.getDeliveryFee = getDeliveryFee;
 
 // WhatsApp Order Formatting & Dispatch
 function sendOrderToWhatsApp() {
@@ -737,7 +805,7 @@ function sendOrderToWhatsApp() {
     changeForAmount = document.getElementById('changeForAmount')?.value.trim();
   }
 
-  let total = 0;
+  let subtotal = 0;
   const sizeLabels = {
     'P': 'Broto (P - 4 fatias)',
     'M': 'Média (M - 6 fatias)',
@@ -747,7 +815,7 @@ function sendOrderToWhatsApp() {
 
   const orderItems = cart.map((item, index) => {
     const itemTotal = item.price * item.quantity;
-    total += itemTotal;
+    subtotal += itemTotal;
     const sizeName = sizeLabels[item.size] || `Tamanho ${item.size}`;
     return {
       index: index + 1,
@@ -760,28 +828,32 @@ function sendOrderToWhatsApp() {
     };
   });
 
+  const deliveryFee = getDeliveryFee();
+  const finalTotal = subtotal + deliveryFee;
+
   // Estrutura de dados em JSON
   const orderJSON = {
     customer: customerName,
     phone: customerPhone,
     orderType: orderType === 'delivery' ? 'Entrega (Delivery)' : 'Retirada no Balcão',
     isDelivery: orderType === 'delivery',
+    deliveryFee: deliveryFee,
+    subtotal: subtotal.toFixed(2).replace('.', ','),
     address: orderType === 'delivery' ? {
       street: street,
       neighborhood: neighborhood,
       complement: complement || ''
     } : null,
     items: orderItems,
-    total: total.toFixed(2).replace('.', ','),
+    total: finalTotal.toFixed(2).replace('.', ','),
     payment: payment,
     isCash: payment === 'Dinheiro',
     needChange: needChange,
     changeFor: changeForAmount,
-    changeDiff: (payment === 'Dinheiro' && needChange && changeForAmount) ? (parseFloat(changeForAmount.replace('R$', '').replace('.', '').replace(',', '.').trim()) - total) : null,
+    changeDiff: (payment === 'Dinheiro' && needChange && changeForAmount) ? (parseFloat(changeForAmount.replace('R$', '').replace('.', '').replace(',', '.').trim()) - finalTotal) : null,
     generalNotes: generalNotes
   };
 
-  // Decodifica o JSON e injeta os emojis via CodePoints de forma 100% segura
   // Registrar pedido assincronamente no backend Supabase
   if (window.logOrderToSupabase) {
     window.logOrderToSupabase({
@@ -790,7 +862,7 @@ function sendOrderToWhatsApp() {
       orderType: orderType === 'delivery' ? 'Delivery' : 'Retirada',
       deliveryAddress: orderType === 'delivery' ? `${street}, ${neighborhood}${complement ? ' - ' + complement : ''}` : 'Retirada no Balcão',
       items: orderJSON.items,
-      totalAmount: total,
+      totalAmount: finalTotal,
       paymentMethod: payment,
       notes: generalNotes
     });
@@ -843,6 +915,11 @@ function generateWhatsAppMessageFromJSON(data) {
     if (data.address.complement) {
       txt += `${E_DOT} *Complemento:* ${data.address.complement}\n`;
     }
+    if (data.deliveryFee > 0) {
+      txt += `${E_MOTO} *Taxa de Entrega:* R$ ${data.deliveryFee.toFixed(2).replace('.', ',')} (Alto do Brito / Boca do Forno)\n`;
+    } else {
+      txt += `${E_MOTO} *Taxa de Entrega:* Grátis (Itaiçaba Sede)\n`;
+    }
     txt += `\n`;
   }
 
@@ -859,6 +936,10 @@ function generateWhatsAppMessageFromJSON(data) {
   });
 
   txt += `${LINE}\n`;
+  if (data.isDelivery && data.deliveryFee > 0) {
+    txt += `*Subtotal dos Itens:* R$ ${data.subtotal}\n`;
+    txt += `*Taxa de Entrega:* R$ ${data.deliveryFee.toFixed(2).replace('.', ',')}\n`;
+  }
   txt += `${E_MONEY} *VALOR TOTAL DO PEDIDO: R$ ${data.total}*\n`;
   txt += `${E_CARD} *FORMA DE PAGAMENTO:* ${data.payment}\n`;
 

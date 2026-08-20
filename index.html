@@ -26,7 +26,7 @@
       <div class="top-info">
         <span><i class="fa-solid fa-location-dot"></i> Rua José Jacinto de Oliveira, Beira Rio, Itaiçaba - CE</span>
         <span class="divider-dot">•</span>
-        <span><i class="fa-solid fa-clock"></i> Terça a Domingo a partir das 18h</span>
+        <span><i class="fa-solid fa-clock"></i> Segunda a Domingo das 18h às 23h</span>
       </div>
       <div class="top-banner-text">
         <span>✨ Mais de 13 anos de tradição e sabor servindo Itaiçaba com carinho!</span>
@@ -598,7 +598,7 @@
       <div class="footer-contact-col">
         <h4>CONTATO & HORÁRIO</h4>
         <p><i class="fa-brands fa-whatsapp"></i> (88) 99334-5987 (Simonny)</p>
-        <p><i class="fa-regular fa-clock"></i> 18:00 às 23:30 (Diariamente)</p>
+        <p><i class="fa-regular fa-clock"></i> Segunda a Domingo: 18h às 23h</p>
         <p><i class="fa-solid fa-location-dot"></i> Beira Rio • Itaiçaba - CE</p>
       </div>
 
@@ -726,6 +726,23 @@
           </div>
 
           <div id="deliveryAddressGroup">
+            <div class="delivery-coverage-alert">
+              <i class="fa-solid fa-map-location-dot"></i>
+              <div>
+                <strong>Área de Entrega:</strong>
+                <span>Entregamos em Itaiçaba (Sede / Beira Rio) e até o <strong>Alto do Brito</strong> e <strong>Boca do Forno</strong> (Taxa de R$ 2,00).</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label><i class="fa-solid fa-location-crosshairs"></i> Região / Localidade de Entrega *</label>
+              <select class="select-input" id="deliveryRegion" onchange="updateDeliveryFee()">
+                <option value="itaicaba" data-fee="0">📍 Itaiçaba (Sede / Centro / Beira Rio / Bairros) — Entrega Grátis</option>
+                <option value="brito" data-fee="2">🛵 Alto do Brito / Brito — Taxa de R$ 2,00</option>
+                <option value="boca_do_forno" data-fee="2">🛵 Boca do Forno — Taxa de R$ 2,00</option>
+              </select>
+            </div>
+
             <div class="form-group">
               <label>Rua / Avenida e Número *</label>
               <input type="text" class="form-control" id="deliveryStreet" placeholder="Ex: Rua São Pedro, 150">
@@ -733,7 +750,7 @@
             <div class="form-row">
               <div class="form-group">
                 <label>Bairro e Ponto de Referência *</label>
-                <input type="text" class="form-control" id="deliveryNeighborhood" placeholder="Ex: Centro, próx. à praça (Itaiçaba)">
+                <input type="text" class="form-control" id="deliveryNeighborhood" placeholder="Ex: Centro, próx. à praça / igreja" oninput="detectNeighborhoodFee()">
               </div>
               <div class="form-group">
                 <label>Complemento (Opcional)</label>
@@ -788,9 +805,19 @@
       </div>
 
       <div class="modal-footer">
-        <div class="total-display">
-          <span>Total do Pedido:</span>
-          <strong id="cartTotalPrice">R$ 0,00</strong>
+        <div class="cart-totals-breakdown">
+          <div class="total-line subtotal-line">
+            <span>Subtotal:</span>
+            <span id="cartSubtotalPrice">R$ 0,00</span>
+          </div>
+          <div class="total-line delivery-fee-line" id="deliveryFeeLine">
+            <span>Taxa de Entrega:</span>
+            <span id="cartDeliveryFeePrice" style="color: #51cf66;">Grátis</span>
+          </div>
+          <div class="total-line grand-total-line">
+            <span>Total a Pagar:</span>
+            <strong id="cartTotalPrice">R$ 0,00</strong>
+          </div>
         </div>
         <button class="btn-primary" onclick="sendOrderToWhatsApp()">
           <i class="fa-brands fa-whatsapp"></i> Finalizar no WhatsApp com Simonny
