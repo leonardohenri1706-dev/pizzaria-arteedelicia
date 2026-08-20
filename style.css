@@ -385,7 +385,7 @@ body {
 }
 
 /* 3. Hero Section (Clean Editorial Artisanal Pizzeria) */
-/* padding-top = top-bar (~30px) + navbar (~70px) + original 2rem spacing */
+/* Offset: top-bar (30px) + navbar (~70px) + spacing (2rem) */
 .hero-banner-wrapper {
   padding: calc(30px + 70px + 2rem) 0 1.5rem 0;
 }
@@ -3066,10 +3066,15 @@ body {
 @media (max-width: 1024px) {
   .navbar {
     padding: 0.8rem 1.5rem;
+    top: 30px;
   }
 
   .navbar.scrolled {
     padding: 0.6rem 1.5rem;
+  }
+
+  .hero-banner-wrapper {
+    padding: calc(30px + 64px + 1.5rem) 0 1.5rem 0;
   }
 
   .hero-editorial-card {
@@ -3148,12 +3153,22 @@ body {
     font-size: 0.76rem;
   }
 
+  /* Mobile: top-bar hidden, navbar at top:0 */
+  .top-bar {
+    display: none;
+  }
+
   .navbar {
+    top: 0;
     padding: 0.65rem 1rem;
   }
 
   .navbar.scrolled {
     padding: 0.55rem 1rem;
+  }
+
+  .hero-banner-wrapper {
+    padding: calc(60px + 1.2rem) 0 1rem 0;
   }
 
   .logo-text h1 {
@@ -3197,7 +3212,7 @@ body {
   }
 
   .hero-banner-wrapper {
-    padding: 1.2rem 0;
+    padding: calc(60px + 1.2rem) 0 1rem 0;
   }
 
   .hero-editorial-card {

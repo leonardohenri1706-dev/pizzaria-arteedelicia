@@ -13,7 +13,22 @@ document.addEventListener('DOMContentLoaded', () => {
   renderPizzaGrid();
   updateCartBadge();
   updateUserNavBadge();
-  
+
+  // Intercepta TODOS os links internos de âncora para usar scroll com offset da navbar fixa
+  document.addEventListener('click', (e) => {
+    const link = e.target.closest('a[href^="#"]');
+    if (!link) return;
+    const hash = link.getAttribute('href');
+    if (!hash || hash === '#') return;
+    const id = hash.slice(1);
+    const target = document.getElementById(id);
+    if (!target) return;
+    // Só intercepta se NÃO tiver onclick já tratando (filterCategory etc.)
+    if (link.getAttribute('onclick') && link.getAttribute('onclick').includes('event.preventDefault()')) return;
+    e.preventDefault();
+    scrollToSection(id);
+  });
+
   // Inicialização do efeito FoldText (React Bits para Vanilla JS)
   try {
     initFoldText();
@@ -248,6 +263,21 @@ function toggleFavorite(pizzaId, e) {
   renderPizzaGrid();
 }
 
+// Utility: scroll to element accounting for fixed navbar + top-bar height
+function scrollToSection(id) {
+  const target = document.getElementById(id);
+  if (!target) return;
+
+  const topBar = document.querySelector('.top-bar');
+  const navbar = document.querySelector('.navbar');
+  const topBarH = (topBar && getComputedStyle(topBar).display !== 'none') ? (topBar.offsetHeight || 30) : 0;
+  const navbarH = navbar ? (navbar.offsetHeight || 68) : 68;
+  const offset = topBarH + navbarH + 12; // 12px extra breathing room
+
+  const elementTop = target.getBoundingClientRect().top + window.pageYOffset;
+  window.scrollTo({ top: elementTop - offset, behavior: 'smooth' });
+}
+
 // Category Filter
 function filterCategory(category) {
   currentCategory = category;
@@ -255,17 +285,17 @@ function filterCategory(category) {
   document.getElementById(`btn-${category}`)?.classList.add('active');
   renderPizzaGrid();
 
-  const target = document.getElementById('destaques') || document.getElementById('cardapio');
-  if (target) {
-    target.scrollIntoView({ behavior: 'smooth' });
-    
+  const targetId = document.getElementById('cardapio') ? 'cardapio' : 'destaques';
+  scrollToSection(targetId);
+
+  setTimeout(() => {
     if (typeof gsap !== 'undefined') {
-      gsap.fromTo('.pizza-card-clean', 
+      gsap.fromTo('.pizza-card-clean',
         { y: 25, opacity: 0, scale: 0.96 },
         { y: 0, opacity: 1, scale: 1, duration: 0.5, stagger: 0.05, ease: 'power2.out' }
       );
     }
-  }
+  }, 250);
 }
 
 // Smooth animated scroll to all pizzas in catalog
@@ -275,24 +305,23 @@ function scrollToCatalogAndAnimate(category = 'all') {
   document.getElementById(`btn-${category}`)?.classList.add('active');
   renderPizzaGrid();
 
-  const target = document.getElementById('destaques') || document.getElementById('cardapio');
-  if (target) {
-    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    
-    setTimeout(() => {
-      if (typeof gsap !== 'undefined') {
-        gsap.fromTo('.pizza-card-clean', 
-          { y: 35, opacity: 0, scale: 0.94 },
-          { y: 0, opacity: 1, scale: 1, duration: 0.6, stagger: 0.06, ease: 'back.out(1.2)' }
-        );
-      }
-    }, 350);
-  }
+  const targetId = document.getElementById('cardapio') ? 'cardapio' : 'destaques';
+  scrollToSection(targetId);
+
+  setTimeout(() => {
+    if (typeof gsap !== 'undefined') {
+      gsap.fromTo('.pizza-card-clean',
+        { y: 35, opacity: 0, scale: 0.94 },
+        { y: 0, opacity: 1, scale: 1, duration: 0.6, stagger: 0.06, ease: 'back.out(1.2)' }
+      );
+    }
+  }, 350);
 }
 
 // Global exposure
 window.scrollToCatalogAndAnimate = scrollToCatalogAndAnimate;
 window.filterCategory = filterCategory;
+window.scrollToSection = scrollToSection;
 
 // Search Filter
 function filterPizzas() {
