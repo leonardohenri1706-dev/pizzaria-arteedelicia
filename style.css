@@ -2573,42 +2573,6 @@ body {
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
 }
 
-.floating-whatsapp-btn:hover .whatsapp-tooltip {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-@keyframes pulse-whatsapp {
-  0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.6); }
-  70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
-}
-
-@media (max-width: 1024px) {
-  .about-grid {
-    grid-template-columns: 1fr;
-  }
-  .testimonial-slide {
-    flex: 0 0 50%;
-  }
-}
-
-@media (max-width: 768px) {
-  .testimonial-slide {
-    flex: 0 0 100%;
-  }
-  .about-badges {
-    grid-template-columns: 1fr;
-  }
-  .about-video-player {
-    height: auto;
-    max-height: 480px;
-  }
-  .cta-banner-card h2 {
-    font-size: 1.7rem;
-  }
-}
-
 /* =========================================================================
    ÁREA DE LOGIN, CADASTRO & PERFIL SALVO DO CLIENTE
    ========================================================================= */
@@ -2761,4 +2725,425 @@ body {
 .checkbox-save-profile span {
   color: rgba(253, 250, 246, 0.85);
 }
+
+/* =========================================================================
+   SISTEMA DE DESIGN TOTALMENTE RESPONSIVO (320px ATÉ TELAS ULTRA-WIDE)
+   ========================================================================= */
+
+/* Tablets Grandes e Telas Médias (max-width: 1200px) */
+@media (max-width: 1200px) {
+  .hero-editorial-card {
+    padding: 3rem 2.5rem;
+    gap: 2.5rem;
+  }
+  
+  .hero-main-title {
+    font-size: 3.2rem;
+  }
+
+  .popular-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+
+  .promo-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.2rem;
+  }
+}
+
+/* Tablets (max-width: 1024px) */
+@media (max-width: 1024px) {
+  .navbar {
+    padding: 0.8rem 1.5rem;
+  }
+
+  .navbar.scrolled {
+    padding: 0.6rem 1.5rem;
+  }
+
+  .hero-editorial-card {
+    grid-template-columns: 1fr;
+    padding: 3rem 2rem;
+    text-align: center;
+  }
+
+  .hero-cursive-eyebrow {
+    margin: 0 auto 0.5rem auto;
+  }
+
+  .hero-description {
+    margin: 0 auto 2rem auto;
+  }
+
+  .hero-actions {
+    justify-content: center;
+  }
+
+  .hero-location-line {
+    justify-content: center;
+  }
+
+  .hero-large-photo-frame {
+    max-width: 480px;
+    height: 420px;
+    margin: 0 auto;
+  }
+
+  .hero-features-bar {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .about-grid {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .about-badges {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .promo-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .promo-card:last-child {
+    grid-column: span 2;
+  }
+
+  .testimonial-slide {
+    flex: 0 0 50%;
+  }
+
+  .why-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .footer-top-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+}
+
+/* Tablets Verticais e Smartphones Grandes (max-width: 768px) */
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+
+  .top-bar-content {
+    justify-content: center;
+    text-align: center;
+    font-size: 0.76rem;
+  }
+
+  .navbar {
+    padding: 0.65rem 1rem;
+  }
+
+  .navbar.scrolled {
+    padding: 0.55rem 1rem;
+  }
+
+  .logo-text h1 {
+    font-size: 1.25rem;
+  }
+
+  .logo-text p {
+    font-size: 0.6rem;
+  }
+
+  .logo-icon {
+    width: 34px;
+    height: 34px;
+    font-size: 1.1rem;
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  .search-box {
+    display: none;
+  }
+
+  .btn-account {
+    padding: 0.45rem 0.8rem;
+    font-size: 0.78rem;
+  }
+
+  .btn-cart {
+    padding: 0.45rem 0.85rem;
+    font-size: 0.78rem;
+  }
+
+  .btn-order-nav {
+    display: none;
+  }
+
+  .btn-menu-toggle {
+    display: flex;
+  }
+
+  .hero-banner-wrapper {
+    padding: 1.2rem 0;
+  }
+
+  .hero-editorial-card {
+    padding: 2.2rem 1.2rem;
+    border-radius: var(--radius-md);
+  }
+
+  .hero-main-title {
+    font-size: 2.4rem;
+    letter-spacing: 0.5px;
+  }
+
+  .hero-description {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+  }
+
+  .btn-hero-primary, .btn-hero-secondary {
+    width: 100%;
+    justify-content: center;
+    padding: 0.9rem 1.5rem;
+    font-size: 0.88rem;
+  }
+
+  .hero-location-line {
+    flex-direction: column;
+    gap: 4px;
+    font-size: 0.8rem;
+  }
+
+  .divider-dot {
+    display: none;
+  }
+
+  .hero-large-photo-frame {
+    height: 300px;
+    max-width: 100%;
+    border-radius: var(--radius-md);
+  }
+
+  .hero-features-bar {
+    grid-template-columns: 1fr;
+    padding: 1.2rem;
+    gap: 12px;
+  }
+
+  .about-badges {
+    grid-template-columns: 1fr;
+  }
+
+  .about-cta-bar {
+    flex-direction: column;
+  }
+
+  .about-cta-bar a, .about-cta-bar button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .about-video-player {
+    height: auto;
+    max-height: 320px;
+  }
+
+  .category-explore-section {
+    padding-top: 2rem;
+  }
+
+  .category-pills-bar {
+    display: flex;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    gap: 8px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .category-pills-bar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .cat-pill {
+    white-space: nowrap;
+    padding: 0.55rem 1.1rem;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+  }
+
+  .promo-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .promo-card:last-child {
+    grid-column: span 1;
+  }
+
+  .popular-grid {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+  }
+
+  .pizza-card {
+    max-width: 100%;
+  }
+
+  .cta-banner-card {
+    padding: 2.2rem 1.4rem;
+  }
+
+  .cta-banner-card h2 {
+    font-size: 1.6rem;
+    line-height: 1.2;
+  }
+
+  .cta-buttons-group {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .cta-buttons-group a, .cta-buttons-group button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .testimonial-slide {
+    flex: 0 0 100%;
+  }
+
+  .why-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .res-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .btn-res-submit {
+    grid-column: span 1;
+    width: 100%;
+  }
+
+  .newsletter-card {
+    flex-direction: column;
+    text-align: center;
+    gap: 1.2rem;
+    padding: 2rem 1.2rem;
+  }
+
+  .newsletter-card .news-action a {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .footer-top-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    text-align: center;
+  }
+
+  .footer-brand-col .footer-logo, .footer-social-icons {
+    justify-content: center;
+  }
+
+  /* Modais Adaptados para Telas Mobile */
+  .modal-card {
+    width: 95vw !important;
+    max-width: 95vw !important;
+    margin: 10px auto;
+    max-height: 94vh;
+    border-radius: 16px;
+  }
+
+  .modal-body {
+    max-height: calc(94vh - 130px);
+    overflow-y: auto;
+    padding: 1.2rem 1rem;
+  }
+
+  .modal-header {
+    padding: 1rem 1.2rem;
+  }
+
+  .modal-footer {
+    padding: 1rem 1.2rem;
+    flex-direction: column;
+  }
+
+  .modal-footer button, .modal-footer a {
+    width: 100%;
+  }
+
+  .flavors-select-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .size-selector-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .size-option-card {
+    padding: 0.8rem 0.5rem;
+  }
+
+  .floating-cart-bar {
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    padding: 0.75rem 1rem;
+  }
+
+  .floating-whatsapp-btn {
+    bottom: 75px;
+    right: 15px;
+    width: 52px;
+    height: 52px;
+    font-size: 1.6rem;
+  }
+
+  .whatsapp-tooltip {
+    display: none;
+  }
+}
+
+/* Smartphones Compactos (max-width: 480px) */
+@media (max-width: 480px) {
+  .hero-main-title {
+    font-size: 2.1rem;
+  }
+
+  .hero-large-photo-frame {
+    height: 260px;
+  }
+
+  .size-selector-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .auth-actions {
+    flex-direction: column;
+  }
+
+  .auth-clear-btn, .auth-save-btn {
+    width: 100%;
+  }
+}
+
 
