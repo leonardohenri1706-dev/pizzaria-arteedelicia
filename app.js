@@ -285,17 +285,19 @@ function filterCategory(category) {
   document.getElementById(`btn-${category}`)?.classList.add('active');
   renderPizzaGrid();
 
-  const targetId = document.getElementById('cardapio') ? 'cardapio' : 'destaques';
-  scrollToSection(targetId);
-
-  setTimeout(() => {
-    if (typeof gsap !== 'undefined') {
-      gsap.fromTo('.pizza-card-clean',
-        { y: 25, opacity: 0, scale: 0.96 },
-        { y: 0, opacity: 1, scale: 1, duration: 0.5, stagger: 0.05, ease: 'power2.out' }
-      );
-    }
-  }, 250);
+  // Aguarda o browser repintar o DOM antes de calcular posição
+  requestAnimationFrame(() => {
+    const targetId = document.getElementById('cardapio') ? 'cardapio' : 'destaques';
+    scrollToSection(targetId);
+    setTimeout(() => {
+      if (typeof gsap !== 'undefined') {
+        gsap.fromTo('.pizza-card-clean',
+          { y: 25, opacity: 0, scale: 0.96 },
+          { y: 0, opacity: 1, scale: 1, duration: 0.5, stagger: 0.05, ease: 'power2.out' }
+        );
+      }
+    }, 200);
+  });
 }
 
 // Smooth animated scroll to all pizzas in catalog
@@ -305,17 +307,18 @@ function scrollToCatalogAndAnimate(category = 'all') {
   document.getElementById(`btn-${category}`)?.classList.add('active');
   renderPizzaGrid();
 
-  const targetId = document.getElementById('cardapio') ? 'cardapio' : 'destaques';
-  scrollToSection(targetId);
-
-  setTimeout(() => {
-    if (typeof gsap !== 'undefined') {
-      gsap.fromTo('.pizza-card-clean',
-        { y: 35, opacity: 0, scale: 0.94 },
-        { y: 0, opacity: 1, scale: 1, duration: 0.6, stagger: 0.06, ease: 'back.out(1.2)' }
-      );
-    }
-  }, 350);
+  requestAnimationFrame(() => {
+    const targetId = document.getElementById('cardapio') ? 'cardapio' : 'destaques';
+    scrollToSection(targetId);
+    setTimeout(() => {
+      if (typeof gsap !== 'undefined') {
+        gsap.fromTo('.pizza-card-clean',
+          { y: 35, opacity: 0, scale: 0.94 },
+          { y: 0, opacity: 1, scale: 1, duration: 0.6, stagger: 0.06, ease: 'back.out(1.2)' }
+        );
+      }
+    }, 300);
+  });
 }
 
 // Global exposure
