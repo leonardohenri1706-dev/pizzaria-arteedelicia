@@ -167,32 +167,30 @@ body {
 }
 
 .site-official-logo {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid var(--accent-gold);
-  box-shadow: 0 4px 15px rgba(229, 169, 60, 0.3);
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  filter: drop-shadow(0 3px 10px rgba(0, 0, 0, 0.45));
   flex-shrink: 0;
+  background: transparent;
 }
 
 .drawer-official-logo {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid var(--accent-gold);
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.4));
   flex-shrink: 0;
+  background: transparent;
 }
 
 .footer-official-logo {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid var(--accent-gold);
-  box-shadow: 0 4px 15px rgba(229, 169, 60, 0.25);
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5));
   flex-shrink: 0;
+  background: transparent;
 }
 
 .footer-logo {
