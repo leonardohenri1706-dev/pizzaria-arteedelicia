@@ -225,12 +225,16 @@
 
       <!-- Coluna 2: Apresentação do Espaço com Vídeo Real -->
       <div class="about-media-side">
-        <div class="video-container-card">
+        <div class="video-container-card" id="videoCardContainer" onclick="toggleVideoAudio(event)">
           <div class="video-header-badge">
             <span class="pulse-dot"></span>
             <span>CONHEÇA NOSSO ESPAÇO</span>
           </div>
-          <video class="about-video-player" src="assets/espaco_pizzaria.mp4" controls autoplay muted loop playsinline poster="assets/hero.jpg"></video>
+          <button type="button" class="video-sound-overlay-btn" id="videoSoundBtn" aria-label="Ativar Áudio">
+            <i class="fa-solid fa-volume-xmark" id="videoSoundIcon"></i>
+            <span id="videoSoundText">Toque para ativar o som 🔊</span>
+          </button>
+          <video class="about-video-player" id="aboutVideoPlayer" src="assets/espaco_pizzaria.mp4" controls autoplay muted loop playsinline poster="assets/hero.jpg"></video>
           <div class="video-footer-info">
             <div class="video-info-text">
               <strong>Espaço Amplo & Aconchegante no Beira Rio</strong>

@@ -1466,7 +1466,63 @@ function prefillCartFromProfile() {
 // Inicializar badge ao carregar a página
 document.addEventListener('DOMContentLoaded', () => {
   updateUserNavBadge();
+
+  // Listener para ativar som do vídeo ao clicar
+  const video = document.getElementById('aboutVideoPlayer');
+  if (video) {
+    video.addEventListener('volumechange', () => {
+      const soundBtn = document.getElementById('videoSoundBtn');
+      const soundIcon = document.getElementById('videoSoundIcon');
+      const soundText = document.getElementById('videoSoundText');
+      if (!video.muted && video.volume > 0) {
+        if (soundBtn) soundBtn.classList.add('unmuted');
+        if (soundIcon) soundIcon.className = 'fa-solid fa-volume-high';
+        if (soundText) soundText.innerText = 'Áudio Ativado 🔊';
+      } else {
+        if (soundBtn) soundBtn.classList.remove('unmuted');
+        if (soundIcon) soundIcon.className = 'fa-solid fa-volume-xmark';
+        if (soundText) soundText.innerText = 'Toque para ativar o som 🔊';
+      }
+    });
+
+    video.addEventListener('click', () => {
+      if (video.muted) {
+        video.muted = false;
+        video.volume = 1.0;
+        if (video.paused) video.play();
+      }
+    });
+  }
 });
+
+// Função para alternar áudio ao clicar no card ou botão do vídeo
+function toggleVideoAudio(e) {
+  if (e && e.target && e.target.closest('.btn-video-res')) return;
+
+  const video = document.getElementById('aboutVideoPlayer');
+  const soundBtn = document.getElementById('videoSoundBtn');
+  const soundIcon = document.getElementById('videoSoundIcon');
+  const soundText = document.getElementById('videoSoundText');
+
+  if (!video) return;
+
+  if (video.muted) {
+    video.muted = false;
+    video.volume = 1.0;
+    if (video.paused) video.play();
+
+    if (soundBtn) soundBtn.classList.add('unmuted');
+    if (soundIcon) soundIcon.className = 'fa-solid fa-volume-high';
+    if (soundText) soundText.innerText = 'Áudio Ativado 🔊';
+  } else {
+    if (e && e.target && e.target.closest('#videoSoundBtn')) {
+      video.muted = true;
+      if (soundBtn) soundBtn.classList.remove('unmuted');
+      if (soundIcon) soundIcon.className = 'fa-solid fa-volume-xmark';
+      if (soundText) soundText.innerText = 'Toque para ativar o som 🔊';
+    }
+  }
+}
 
 // Exportar globalmente
 window.openAuthModal = openAuthModal;
@@ -1474,6 +1530,8 @@ window.closeAuthModal = closeAuthModal;
 window.saveUserProfile = saveUserProfile;
 window.clearUserProfile = clearUserProfile;
 window.getUserProfile = getUserProfile;
+window.toggleVideoAudio = toggleVideoAudio;
+
 
 
 
