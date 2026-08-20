@@ -23,7 +23,7 @@ const MENU_DATA = {
       ingredients: "Molho, Mussarela, Frango, Tomate, Cebola, Azeitona e Orégano",
       category: "classica",
       prices: { P: 21.00, M: 28.00, G: 35.00, GG: 58.00 },
-      image: "assets/hero.jpg"
+      image: "assets/frango.jpg"
     },
     {
       id: "portuguesa",
