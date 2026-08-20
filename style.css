@@ -378,7 +378,8 @@ body {
 
 /* 3. Hero Section (Clean Editorial Artisanal Pizzeria) */
 .hero-banner-wrapper {
-  padding: 2rem 0 1.5rem 0;
+  margin-top: -75px;
+  padding: calc(2rem + 75px) 0 1.5rem 0;
 }
 
 .hero-editorial-card {
