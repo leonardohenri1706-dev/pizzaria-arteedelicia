@@ -177,7 +177,7 @@ window.saveUserProfile = saveUserProfile;
 window.clearUserProfile = clearUserProfile;
 window.getUserProfile = getUserProfile;
 
-// Combine all pizzas into a single array
+// Combine all pizzas into a single array (sem bebidas)
 function getAllPizzas() {
   return [
     ...(MENU_DATA.pizzasClassicas || []),
@@ -186,45 +186,122 @@ function getAllPizzas() {
   ];
 }
 
+let currentMenuSize = 'G'; // Tamanho selecionado no cardápio ('P', 'M', 'G', 'GG')
+
+function filterMenuSize(size) {
+  currentMenuSize = size;
+  document.querySelectorAll('.size-pill').forEach(btn => btn.classList.remove('active'));
+  document.getElementById(`size-btn-${size}`)?.classList.add('active');
+  renderPizzaGrid();
+
+  if (typeof gsap !== 'undefined') {
+    gsap.fromTo('.pizza-card-clean',
+      { y: 18, opacity: 0, scale: 0.97 },
+      { y: 0, opacity: 1, scale: 1, duration: 0.45, stagger: 0.04, ease: 'power2.out' }
+    );
+  }
+}
+window.filterMenuSize = filterMenuSize;
+
 // Render Pizzas Grid in Clean Card Style
 function renderPizzaGrid() {
   const grid = document.getElementById('pizzaGrid');
   if (!grid) return;
 
+  const sizeContainer = document.getElementById('sizePillsContainer');
   const searchQuery = document.getElementById('searchInput')?.value.toLowerCase() || '';
-  let pizzas = getAllPizzas();
 
-  // Filter by category
-  if (currentCategory === 'classica') {
-    pizzas = MENU_DATA.pizzasClassicas || [];
-  } else if (currentCategory === 'especial') {
-    pizzas = MENU_DATA.pizzasEspeciais || [];
-  } else if (currentCategory === 'doce') {
-    pizzas = MENU_DATA.pizzasDoces || [];
+  // --- BEBIDAS ---
+  if (currentCategory === 'bebida') {
+    if (sizeContainer) sizeContainer.style.display = 'none';
+
+    let bebidas = [...(MENU_DATA.bebidas || [])];
+    if (searchQuery.trim() !== '') {
+      bebidas = bebidas.filter(b =>
+        b.name.toLowerCase().includes(searchQuery) ||
+        b.description.toLowerCase().includes(searchQuery)
+      );
+    }
+
+    // Ordenação decrescente por preço (mais caras no topo, mais baratas embaixo)
+    bebidas.sort((a, b) => b.price - a.price);
+
+    if (bebidas.length === 0) {
+      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--text-muted);"><i class="fa-solid fa-glass-water" style="font-size:3rem;margin-bottom:1rem;color:var(--primary-red);"></i><h3>Nenhuma bebida encontrada</h3></div>`;
+      return;
+    }
+    grid.innerHTML = bebidas.map(b => {
+      const price = b.price.toFixed(2).replace('.', ',');
+      return `
+        <div class="pizza-card-clean drink-card">
+          <div class="drink-icon-wrap">
+            ${b.image ? `<img src="${b.image}" alt="${b.name}" class="drink-img-thumb" loading="lazy">` : `<span class="drink-emoji">${b.icon}</span>`}
+          </div>
+          <h3 class="pizza-clean-title">${b.name}</h3>
+          <p class="pizza-clean-ingredients">${b.description}</p>
+          <div class="pizza-clean-footer">
+            <div class="price-container-clean">
+              <span class="size-label-clean">Unidade</span>
+              <div class="price-tag-clean">R$ ${price}</div>
+            </div>
+            <button class="btn-add-cart-clean" onclick="addDrinkToCart('${b.id}')">
+              <i class="fa-solid fa-plus"></i> ADICIONAR
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+    return;
   }
 
-  // Filter by search query
+  // --- PIZZAS ---
+  if (sizeContainer) sizeContainer.style.display = 'flex';
+
+  let pizzas = getAllPizzas();
+  if (currentCategory === 'classica') pizzas = MENU_DATA.pizzasClassicas || [];
+  else if (currentCategory === 'especial') pizzas = MENU_DATA.pizzasEspeciais || [];
+  else if (currentCategory === 'doce') pizzas = MENU_DATA.pizzasDoces || [];
+
+  // Filtrar apenas pizzas disponíveis no tamanho selecionado (ex: Doces não têm GG)
+  pizzas = pizzas.filter(p => p.prices && p.prices[currentMenuSize] != null);
+
   if (searchQuery.trim() !== '') {
-    pizzas = pizzas.filter(p => 
-      p.name.toLowerCase().includes(searchQuery) || 
+    pizzas = pizzas.filter(p =>
+      p.name.toLowerCase().includes(searchQuery) ||
       p.ingredients.toLowerCase().includes(searchQuery)
     );
   }
+
+  // Ordenação decrescente por preço no tamanho selecionado (mais caras no topo, mais baratas embaixo)
+  pizzas.sort((a, b) => {
+    const priceA = a.prices[currentMenuSize] || 0;
+    const priceB = b.prices[currentMenuSize] || 0;
+    return priceB - priceA;
+  });
 
   if (pizzas.length === 0) {
     grid.innerHTML = `
       <div style="grid-column: 1/-1; text-align:center; padding: 3rem; color: var(--text-muted);">
         <i class="fa-solid fa-pizza-slice" style="font-size: 3rem; margin-bottom: 1rem; color: var(--primary-red);"></i>
         <h3>Nenhuma pizza encontrada</h3>
-        <p>Tente buscar por outro termo ou ingrediente.</p>
+        <p>Tente buscar por outro termo ou selecione outro tamanho.</p>
       </div>
     `;
     return;
   }
 
+  const sizeLabelMap = {
+    'P': 'Tamanho P (4 fatias)',
+    'M': 'Tamanho M (6 fatias)',
+    'G': 'Tamanho G (8 fatias)',
+    'GG': 'Tamanho GG (12 fatias)'
+  };
+
   grid.innerHTML = pizzas.map(pizza => {
     const isFav = favorites.includes(pizza.id);
-    const priceG = pizza.prices.G.toFixed(2).replace('.', ',');
+    const sizePrice = pizza.prices[currentMenuSize] || pizza.prices.G || 0;
+    const priceFormatted = sizePrice.toFixed(2).replace('.', ',');
+    const sizeLabel = sizeLabelMap[currentMenuSize] || `Tamanho ${currentMenuSize}`;
 
     return `
       <div class="pizza-card-clean">
@@ -239,10 +316,10 @@ function renderPizzaGrid() {
         
         <div class="pizza-clean-footer">
           <div class="price-container-clean">
-            <span class="size-label-clean">Tamanho G (8 fatias)</span>
-            <div class="price-tag-clean">R$ ${priceG}</div>
+            <span class="size-label-clean">${sizeLabel}</span>
+            <div class="price-tag-clean">R$ ${priceFormatted}</div>
           </div>
-          <button class="btn-add-cart-clean" onclick="openCustomizerModal('${pizza.id}')">
+          <button class="btn-add-cart-clean" onclick="openCustomizerModal('${pizza.id}', '${currentMenuSize}')">
             <i class="fa-solid fa-cart-plus"></i> MONTAR PIZZA
           </button>
         </div>
@@ -250,6 +327,50 @@ function renderPizzaGrid() {
     `;
   }).join('');
 }
+
+// Adicionar bebida ao carrinho diretamente (sem customizador)
+function addDrinkToCart(drinkId) {
+  const drink = (MENU_DATA.bebidas || []).find(b => b.id === drinkId);
+  if (!drink) return;
+
+  const existing = cart.find(i => i.type === 'bebida' && (i.drinkId === drinkId || i.id === drinkId));
+  if (existing) {
+    existing.quantity += 1;
+    existing.totalPrice = (existing.price || existing.unitPrice || drink.price) * existing.quantity;
+  } else {
+    cart.push({
+      id: 'drink_' + drink.id + '_' + Date.now(),
+      type: 'bebida',
+      drinkId: drink.id,
+      name: drink.name,
+      title: drink.name,
+      icon: drink.icon,
+      image: drink.image || '',
+      size: 'Unidade',
+      quantity: 1,
+      price: drink.price,
+      unitPrice: drink.price,
+      totalPrice: drink.price
+    });
+  }
+
+  saveCart();
+  updateCartBadge();
+
+  // Feedback visual no botão
+  const btn = event?.target?.closest('button');
+  if (btn) {
+    const orig = btn.innerHTML;
+    btn.innerHTML = '<i class="fa-solid fa-check"></i> ADICIONADO!';
+    btn.style.background = 'var(--accent-green)';
+    setTimeout(() => {
+      btn.innerHTML = orig;
+      btn.style.background = '';
+    }, 1200);
+  }
+}
+window.addDrinkToCart = addDrinkToCart;
+
 
 // Favorite toggle handler
 function toggleFavorite(pizzaId, e) {
@@ -331,11 +452,16 @@ function filterPizzas() {
 // Global Customizer State
 let flavorCount = 1;
 
-function openCustomizer(pizzaId) {
+function openCustomizer(pizzaId, initialSize) {
   selectedPizza = getAllPizzas().find(p => p.id === pizzaId);
   if (!selectedPizza) return;
 
-  selectedSize = 'G'; // default size
+  const targetSize = initialSize || currentMenuSize || 'G';
+  if (selectedPizza.prices && selectedPizza.prices[targetSize] != null) {
+    selectedSize = targetSize;
+  } else {
+    selectedSize = 'G';
+  }
   flavorCount = 1;
 
   document.getElementById('modalPizzaTitle').innerText = selectedPizza.name;
@@ -565,7 +691,7 @@ function saveCart() {
 // Update Cart Badges & Floating Bar
 function updateCartBadge() {
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-  const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const totalPrice = cart.reduce((sum, item) => sum + ((item.price || item.unitPrice || 0) * item.quantity), 0);
 
   const cartCountEl = document.getElementById('cartCount');
   if (cartCountEl) cartCountEl.innerText = totalItems;
@@ -622,9 +748,36 @@ function renderCartItems() {
     'GG': 'Família (GG - 12 fatias)'
   };
 
-  container.innerHTML = cart.map(item => {
+  container.innerHTML = cart.map((item, index) => {
+    // --- BEBIDA ---
+    if (item.type === 'bebida') {
+      const unitPrice = (item.unitPrice || 0).toFixed(2).replace('.', ',');
+      const total = (item.totalPrice || item.unitPrice * item.quantity).toFixed(2).replace('.', ',');
+      return `
+        <div class="cart-item-card">
+          ${item.image ? `<img src="${item.image}" alt="${item.name}" class="cart-item-img">` : `<div class="cart-drink-icon">${item.icon || '🥤'}</div>`}
+          <div class="cart-item-details">
+            <div class="cart-item-name">${item.name}</div>
+            <div class="cart-item-meta"><span class="badge-size">Bebida</span></div>
+            <div class="cart-item-price-row">
+              <span class="cart-item-unit-price">R$ ${unitPrice} un.</span>
+              <span class="cart-item-total-price">R$ ${total}</span>
+            </div>
+          </div>
+          <div class="cart-item-actions">
+            <button class="btn-qty-ctrl" onclick="changeDrinkQty(${index}, -1)" aria-label="Diminuir"><i class="fa-solid fa-minus"></i></button>
+            <span class="cart-qty-num">${item.quantity}</span>
+            <button class="btn-qty-ctrl" onclick="changeDrinkQty(${index}, 1)" aria-label="Aumentar"><i class="fa-solid fa-plus"></i></button>
+          </div>
+        </div>
+      `;
+    }
+
+    // --- PIZZA ---
+    const sizeLabels = { 'P': 'Broto (4 fatias)', 'M': 'Média (6 fatias)', 'G': 'Grande (8 fatias)', 'GG': 'Família (12 fatias)' };
     const sizeName = sizeLabels[item.size] || `Tamanho ${item.size}`;
-    const itemTotal = (item.price * item.quantity).toFixed(2).replace('.', ',');
+    const unitPrice = (item.price || item.unitPrice || 0).toFixed(2).replace('.', ',');
+    const itemTotal = ((item.price || item.unitPrice || 0) * item.quantity).toFixed(2).replace('.', ',');
     return `
       <div class="cart-item-card">
         <img src="${item.image}" alt="${item.title}" class="cart-item-img">
@@ -635,7 +788,7 @@ function renderCartItems() {
             ${item.notes ? `<span class="badge-notes">Obs: ${item.notes}</span>` : ''}
           </div>
           <div class="cart-item-price-row">
-            <span class="cart-item-unit-price">R$ ${item.price.toFixed(2).replace('.', ',')} un.</span>
+            <span class="cart-item-unit-price">R$ ${unitPrice} un.</span>
             <span class="cart-item-total-price">R$ ${itemTotal}</span>
           </div>
         </div>
@@ -650,6 +803,22 @@ function renderCartItems() {
 
   updateDeliveryFee();
 }
+
+function changeDrinkQty(index, delta) {
+  if (!cart[index] || cart[index].type !== 'bebida') return;
+  cart[index].quantity += delta;
+  if (cart[index].quantity <= 0) {
+    cart.splice(index, 1);
+  } else {
+    const itemPrice = cart[index].price || cart[index].unitPrice || 0;
+    cart[index].totalPrice = itemPrice * cart[index].quantity;
+  }
+  saveCart();
+  updateCartBadge();
+  renderCartItems();
+}
+window.changeDrinkQty = changeDrinkQty;
+
 
 function getDeliveryFee() {
   if (orderType !== 'delivery') return 0;
@@ -671,7 +840,7 @@ function getDeliveryFee() {
 }
 
 function updateDeliveryFee() {
-  const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const subtotal = cart.reduce((sum, item) => sum + ((item.price || item.unitPrice || 0) * item.quantity), 0);
   const fee = getDeliveryFee();
   const grandTotal = subtotal + fee;
 
@@ -777,7 +946,7 @@ window.getDeliveryFee = getDeliveryFee;
 // WhatsApp Order Formatting & Dispatch
 function sendOrderToWhatsApp() {
   if (cart.length === 0) {
-    alert('Adicione ao menos uma pizza ao seu carrinho antes de finalizar.');
+    alert('Adicione itens ao seu carrinho antes de finalizar.');
     return;
   }
 
@@ -843,16 +1012,19 @@ function sendOrderToWhatsApp() {
   };
 
   const orderItems = cart.map((item, index) => {
-    const itemTotal = item.price * item.quantity;
+    const itemPrice = item.price || item.unitPrice || 0;
+    const itemTotal = itemPrice * item.quantity;
     subtotal += itemTotal;
-    const sizeName = sizeLabels[item.size] || `Tamanho ${item.size}`;
+    const isDrink = item.type === 'bebida';
+    const sizeName = isDrink ? 'Unidade' : (sizeLabels[item.size] || `Tamanho ${item.size}`);
     return {
       index: index + 1,
-      title: item.title,
+      type: item.type || 'pizza',
+      title: item.title || item.name,
       size: sizeName,
       notes: item.notes || '',
       quantity: item.quantity,
-      unitPrice: item.price.toFixed(2).replace('.', ','),
+      unitPrice: itemPrice.toFixed(2).replace('.', ','),
       subtotal: itemTotal.toFixed(2).replace('.', ',')
     };
   });
@@ -956,12 +1128,18 @@ function generateWhatsAppMessageFromJSON(data) {
   txt += `${E_CLIP} *ITENS DO PEDIDO:*\n\n`;
 
   data.items.forEach(it => {
-    txt += `*${it.index}. ${it.quantity}x ${it.title}*\n`;
-    txt += `   ${E_DOT} *Tamanho:* ${it.size}\n`;
-    if (it.notes) {
-      txt += `   ${E_DOT} *Obs:* ${it.notes}\n`;
+    if (it.type === 'bebida') {
+      txt += `*${it.index}. ${it.quantity}x ${it.title}*\n`;
+      txt += `   ${E_DOT} *Item:* Bebida Gelada\n`;
+      txt += `   ${E_DOT} *Subtotal:* R$ ${it.subtotal}\n\n`;
+    } else {
+      txt += `*${it.index}. ${it.quantity}x ${it.title}*\n`;
+      txt += `   ${E_DOT} *Tamanho:* ${it.size}\n`;
+      if (it.notes) {
+        txt += `   ${E_DOT} *Obs:* ${it.notes}\n`;
+      }
+      txt += `   ${E_DOT} *Subtotal:* R$ ${it.subtotal}\n\n`;
     }
-    txt += `   ${E_DOT} *Subtotal:* R$ ${it.subtotal}\n\n`;
   });
 
   txt += `${LINE}\n`;

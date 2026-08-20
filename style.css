@@ -934,6 +934,139 @@ body {
   border-radius: 50%;
 }
 
+/* Size Selector Pills in Cardapio */
+.size-pills-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin: 1.2rem 0 2rem 0;
+  padding: 1.2rem 1.4rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(229, 169, 60, 0.22);
+  border-radius: var(--radius-md);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+  transition: var(--transition);
+}
+
+.size-filter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.size-filter-label {
+  font-family: var(--font-subheading);
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.size-filter-label i {
+  color: var(--accent-gold);
+  font-size: 1rem;
+}
+
+.size-filter-hint {
+  font-size: 0.75rem;
+  color: var(--accent-yellow);
+  font-weight: 700;
+  background: rgba(245, 158, 11, 0.12);
+  padding: 3px 10px;
+  border-radius: 4px;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.size-pills-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .size-pills-bar {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.size-pill {
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--text-main);
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: var(--transition);
+  text-align: left;
+}
+
+.size-pill:hover {
+  border-color: var(--accent-gold);
+  background: rgba(229, 169, 60, 0.1);
+  transform: translateY(-2px);
+}
+
+.size-pill.active {
+  background: linear-gradient(135deg, rgba(201, 42, 42, 0.35) 0%, rgba(229, 169, 60, 0.22) 100%);
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 20px rgba(229, 169, 60, 0.25);
+}
+
+.size-pill-badge {
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(229, 169, 60, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-subheading);
+  font-weight: 900;
+  font-size: 1.05rem;
+  color: var(--accent-yellow);
+  transition: var(--transition);
+}
+
+.size-pill.active .size-pill-badge {
+  background: var(--accent-gold);
+  color: #111;
+  box-shadow: 0 0 12px rgba(229, 169, 60, 0.5);
+}
+
+.size-pill-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.size-pill-info strong {
+  font-family: var(--font-subheading);
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.size-pill-info small {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.size-pill.active .size-pill-info small {
+  color: rgba(255, 255, 255, 0.85);
+}
+
 /* 5. Promo Cards Grid (3 Cards Side-by-Side) */
 .promo-cards-section {
   padding: 1.5rem;
@@ -1186,6 +1319,51 @@ body {
   color: var(--bg-card-dark);
   box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
   transform: scale(1.05);
+}
+
+/* Drink Card Specific Styling */
+.pizza-card-clean.drink-card {
+  min-height: 380px;
+}
+
+.drink-card .drink-icon-wrap {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  margin-bottom: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid rgba(229, 169, 60, 0.2);
+  background: rgba(255, 255, 255, 0.03);
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+}
+
+.drink-card:hover .drink-icon-wrap {
+  transform: scale(1.08) rotate(-3deg);
+  border-color: var(--accent-gold);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7), 0 0 20px rgba(229, 169, 60, 0.2);
+}
+
+.drink-img-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  transition: transform 0.4s ease;
+}
+
+.drink-card:hover .drink-img-thumb {
+  transform: scale(1.08);
+}
+
+.drink-emoji {
+  font-size: 4rem;
+  line-height: 1;
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.4));
 }
 
 /* 7. "WHY CHOOSE ARTE & DELÍCIA?" 6 Feature Icons Grid */
@@ -1683,6 +1861,20 @@ body {
   border-radius: 10px;
   object-fit: cover;
   border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cart-drink-icon {
+  width: 54px;
+  height: 54px;
+  min-width: 54px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(229, 169, 60, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .cart-item-details {

@@ -327,6 +327,47 @@
         <span class="pill-icon">🍫</span>
         <span>PIZZAS DOCES</span>
       </button>
+      <button class="cat-pill" id="btn-bebida" onclick="filterCategory('bebida')">
+        <span class="pill-icon">🥤</span>
+        <span>BEBIDAS</span>
+      </button>
+    </div>
+
+    <!-- Seletor de Tamanho das Pizzas -->
+    <div class="size-pills-container" id="sizePillsContainer">
+      <div class="size-filter-header">
+        <span class="size-filter-label"><i class="fa-solid fa-pizza-slice"></i> Escolha o tamanho para ver os preços:</span>
+      </div>
+      <div class="size-pills-bar">
+        <button class="size-pill" id="size-btn-P" onclick="filterMenuSize('P')">
+          <span class="size-pill-badge">P</span>
+          <div class="size-pill-info">
+            <strong>Broto (P)</strong>
+            <small>4 fatias</small>
+          </div>
+        </button>
+        <button class="size-pill" id="size-btn-M" onclick="filterMenuSize('M')">
+          <span class="size-pill-badge">M</span>
+          <div class="size-pill-info">
+            <strong>Média (M)</strong>
+            <small>6 fatias</small>
+          </div>
+        </button>
+        <button class="size-pill active" id="size-btn-G" onclick="filterMenuSize('G')">
+          <span class="size-pill-badge">G</span>
+          <div class="size-pill-info">
+            <strong>Grande (G)</strong>
+            <small>8 fatias</small>
+          </div>
+        </button>
+        <button class="size-pill" id="size-btn-GG" onclick="filterMenuSize('GG')">
+          <span class="size-pill-badge">GG</span>
+          <div class="size-pill-info">
+            <strong>Família (GG)</strong>
+            <small>12 fatias</small>
+          </div>
+        </button>
+      </div>
     </div>
 
     <!-- Grid de Pizzas (renderizado pelo app.js) -->
