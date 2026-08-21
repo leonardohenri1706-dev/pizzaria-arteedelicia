@@ -1,3 +1,233 @@
+// Helper para obter as configurações centrais
+function getConfig() {
+  if (typeof RESTAURANT_CONFIG !== 'undefined') {
+    return RESTAURANT_CONFIG;
+  }
+  return {
+    brand: {
+      name: "RESTAURANTE E PIZZARIA ARTE & DELÍCIA",
+      shortName: "ARTE & DELÍCIA",
+      subTitle: "Restaurante & Pizzaria",
+      ownerOrContactPerson: "Simonny",
+      topBannerText: "✨ Mais de 13 anos de tradição e sabor servindo Itaiçaba com carinho!",
+      copyrightText: "© 2026 Restaurante e Pizzaria Arte & Delícia. Todos os direitos reservados."
+    },
+    media: {
+      logo: "assets/logo.png",
+      heroImage: "assets/nordestina.jpg"
+    },
+    contact: {
+      phoneWhatsApp: "5588993345987",
+      phoneDisplay: "(88) 99334-5987",
+      address: "Beira Rio, Itaiçaba - CE",
+      workingHours: "Segunda a Domingo das 18h às 23h"
+    },
+    delivery: {
+      coverageAlertText: "Entregamos em Itaiçaba (Sede / Beira Rio) e até o <strong>Alto do Brito</strong> e <strong>Boca do Forno</strong> (Taxa de R$ 2,00).",
+      defaultFreeLabel: "Grátis (Itaiçaba Sede)",
+      regions: [
+        { id: "itaicaba", name: "📍 Itaiçaba (Sede / Centro / Beira Rio / Bairros) — Entrega Grátis", shortLabel: "Itaiçaba Sede", fee: 0, keywords: ["itaicaba", "sede", "centro", "beira rio"] },
+        { id: "brito", name: "🛵 Alto do Brito / Brito — Taxa de R$ 2,00", shortLabel: "Alto do Brito", fee: 2.0, keywords: ["brito", "alto do brito"] },
+        { id: "boca_do_forno", name: "🛵 Boca do Forno — Taxa de R$ 2,00", shortLabel: "Boca do Forno", fee: 2.0, keywords: ["boca do forno", "forno"] }
+      ]
+    },
+    menu: (typeof MENU_DATA !== 'undefined' ? MENU_DATA : {})
+  };
+}
+
+// Injeção de variáveis CSS imediatas (executa assim que o script é lido)
+(function applyEarlyTheme() {
+  if (typeof RESTAURANT_CONFIG !== 'undefined' && RESTAURANT_CONFIG.theme && RESTAURANT_CONFIG.theme.colors) {
+    const root = document.documentElement;
+    const c = RESTAURANT_CONFIG.theme.colors;
+    if (c.primaryRed) root.style.setProperty('--primary-red', c.primaryRed);
+    if (c.primaryRedHover) root.style.setProperty('--primary-red-hover', c.primaryRedHover);
+    if (c.primaryRedGradient) root.style.setProperty('--primary-red-gradient', c.primaryRedGradient);
+    if (c.accentGold) root.style.setProperty('--accent-gold', c.accentGold);
+    if (c.accentYellow) root.style.setProperty('--accent-yellow', c.accentYellow);
+    if (c.accentGreen) root.style.setProperty('--accent-green', c.accentGreen);
+    if (c.bgDark) root.style.setProperty('--bg-dark', c.bgDark);
+    if (c.bgCardDark) root.style.setProperty('--bg-card-dark', c.bgCardDark);
+    if (c.bgCardLight) root.style.setProperty('--bg-card-light', c.bgCardLight);
+    if (c.textMain) root.style.setProperty('--text-main', c.textMain);
+    if (c.textDark) root.style.setProperty('--text-dark', c.textDark);
+    if (c.textMuted) root.style.setProperty('--text-muted', c.textMuted);
+    if (c.borderDark) root.style.setProperty('--border-dark', c.borderDark);
+    if (c.borderLight) root.style.setProperty('--border-light', c.borderLight);
+  }
+})();
+
+// Aplicação de toda a identidade visual, contatos, mídias e regiões no DOM
+function applyRestaurantConfig() {
+  const cfg = getConfig();
+  if (!cfg) return;
+
+  // 1. Theme / CSS Variables
+  if (cfg.theme && cfg.theme.colors) {
+    const root = document.documentElement;
+    const c = cfg.theme.colors;
+    if (c.primaryRed) root.style.setProperty('--primary-red', c.primaryRed);
+    if (c.primaryRedHover) root.style.setProperty('--primary-red-hover', c.primaryRedHover);
+    if (c.primaryRedGradient) root.style.setProperty('--primary-red-gradient', c.primaryRedGradient);
+    if (c.accentGold) root.style.setProperty('--accent-gold', c.accentGold);
+    if (c.accentYellow) root.style.setProperty('--accent-yellow', c.accentYellow);
+    if (c.accentGreen) root.style.setProperty('--accent-green', c.accentGreen);
+    if (c.bgDark) root.style.setProperty('--bg-dark', c.bgDark);
+    if (c.bgCardDark) root.style.setProperty('--bg-card-dark', c.bgCardDark);
+    if (c.bgCardLight) root.style.setProperty('--bg-card-light', c.bgCardLight);
+    if (c.textMain) root.style.setProperty('--text-main', c.textMain);
+    if (c.textDark) root.style.setProperty('--text-dark', c.textDark);
+    if (c.textMuted) root.style.setProperty('--text-muted', c.textMuted);
+    if (c.borderDark) root.style.setProperty('--border-dark', c.borderDark);
+    if (c.borderLight) root.style.setProperty('--border-light', c.borderLight);
+  }
+
+  // 2. Identidade da Marca e Textos
+  if (cfg.brand) {
+    const b = cfg.brand;
+    if (b.metaTitle) document.title = b.metaTitle;
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc && b.metaDescription) metaDesc.setAttribute('content', b.metaDescription);
+
+    document.querySelectorAll('.logo-brand-title').forEach(el => el.innerText = b.shortName || b.name);
+    document.querySelectorAll('.logo-text p').forEach(el => el.innerText = b.subTitle || 'Restaurante & Pizzaria');
+
+    const topBanner = document.querySelector('.top-banner-text span');
+    if (topBanner && b.topBannerText) topBanner.innerText = b.topBannerText;
+
+    const eyebrow = document.querySelector('.hero-cursive-eyebrow');
+    if (eyebrow && b.eyebrowText) eyebrow.innerText = b.eyebrowText;
+
+    const heroTitle = document.querySelector('.hero-main-title');
+    if (heroTitle && b.heroTitle) {
+      heroTitle.innerHTML = `${b.heroTitle} <span>${b.heroTitleHighlight || ''}</span>`;
+    }
+
+    const heroDesc = document.querySelector('.hero-description');
+    if (heroDesc && b.heroDescription) heroDesc.innerHTML = b.heroDescription;
+
+    const heroWaBtn = document.querySelector('.hero-actions .btn-hero-secondary');
+    if (heroWaBtn) {
+      heroWaBtn.innerHTML = `<i class="fa-brands fa-whatsapp"></i> Falar com ${b.ownerOrContactPerson || 'Atendente'}`;
+    }
+
+    const waTooltip = document.querySelector('.whatsapp-tooltip');
+    if (waTooltip) {
+      waTooltip.innerText = `Fale com ${b.ownerOrContactPerson || 'a gente'}! 🍕`;
+    }
+
+    const btnFinalize = document.querySelector('#cartModal .btn-primary');
+    if (btnFinalize) {
+      btnFinalize.innerHTML = `<i class="fa-brands fa-whatsapp"></i> Finalizar no WhatsApp com ${b.ownerOrContactPerson || 'Atendimento'}`;
+    }
+
+    const btnRes = document.querySelector('.btn-res-submit');
+    if (btnRes) {
+      btnRes.innerHTML = `SOLICITAR RESERVA COM ${b.ownerOrContactPerson ? b.ownerOrContactPerson.toUpperCase() : 'A CASA'} <i class="fa-solid fa-arrow-right"></i>`;
+    }
+
+    const aboutLead = document.querySelector('.about-lead');
+    if (aboutLead && b.aboutLead) aboutLead.innerHTML = b.aboutLead;
+
+    const aboutDesc = document.querySelector('.about-desc');
+    if (aboutDesc && b.aboutDescription) aboutDesc.innerHTML = b.aboutDescription;
+
+    const footerAbout = document.querySelector('.footer-brand-col p');
+    if (footerAbout && (b.footerText || b.aboutLead)) {
+      footerAbout.innerText = `${b.name}. ${b.aboutLead || ''}`;
+    }
+    const footerBottom = document.querySelector('.footer-bottom-bar p');
+    if (footerBottom && b.copyrightText) footerBottom.innerText = b.copyrightText;
+  }
+
+  // 3. Mídias
+  if (cfg.media) {
+    const m = cfg.media;
+    if (m.favicon) {
+      const fav = document.querySelector('link[rel="icon"]');
+      if (fav) fav.href = m.favicon;
+    }
+    if (m.logo) {
+      document.querySelectorAll('.site-official-logo, .drawer-official-logo, .footer-official-logo').forEach(img => {
+        img.src = m.logo;
+        img.alt = `Logo ${cfg.brand?.name || 'Restaurante'}`;
+      });
+    }
+    if (m.heroImage) {
+      const heroImg = document.querySelector('.hero-large-pizza-img');
+      if (heroImg) heroImg.src = m.heroImage;
+    }
+    if (m.aboutVideo) {
+      const video = document.getElementById('aboutVideoPlayer');
+      if (video) {
+        video.src = m.aboutVideo;
+        if (m.aboutVideoPoster) video.poster = m.aboutVideoPoster;
+      }
+    }
+  }
+
+  // 4. Contatos & Links do WhatsApp
+  if (cfg.contact) {
+    const c = cfg.contact;
+    const phone = c.phoneWhatsApp || '5588993345987';
+    const phoneDisplay = c.phoneDisplay || phone;
+    const greeting = encodeURIComponent(`Olá ${cfg.brand?.ownerOrContactPerson || ''}, estou no site e gostaria de fazer um pedido!`);
+
+    document.querySelectorAll('a[href*="wa.me"], a[href*="api.whatsapp.com"]').forEach(a => {
+      a.href = `https://wa.me/${phone}?text=${greeting}`;
+    });
+
+    const topSocial = document.querySelector('.top-socials a');
+    if (topSocial) {
+      topSocial.innerHTML = `<i class="fa-brands fa-whatsapp"></i> ${phoneDisplay}`;
+      topSocial.href = `https://wa.me/${phone}`;
+    }
+
+    const topInfoSpans = document.querySelectorAll('.top-info span');
+    if (topInfoSpans.length >= 3) {
+      if (c.address) topInfoSpans[0].innerHTML = `<i class="fa-solid fa-location-dot"></i> ${c.address}`;
+      if (c.workingHours) topInfoSpans[2].innerHTML = `<i class="fa-solid fa-clock"></i> ${c.workingHours}`;
+    }
+
+    const heroLocSpans = document.querySelectorAll('.hero-location-line span');
+    if (heroLocSpans.length >= 3) {
+      if (c.addressShort || c.address) heroLocSpans[0].innerHTML = `<i class="fa-solid fa-location-dot"></i> ${c.addressShort || c.address}`;
+      if (c.workingHoursShort || c.workingHours) heroLocSpans[2].innerHTML = `<i class="fa-regular fa-clock"></i> ${c.workingHoursShort || c.workingHours}`;
+    }
+
+    const newsText = document.querySelector('.news-text p');
+    if (newsText) {
+      newsText.innerHTML = `Fale diretamente com ${cfg.brand?.ownerOrContactPerson || 'nosso atendimento'} pelo WhatsApp: <strong>${phoneDisplay}</strong>. Estamos prontos para te atender!`;
+    }
+
+    const footerContact = document.querySelector('.footer-contact-col');
+    if (footerContact) {
+      footerContact.innerHTML = `
+        <h4>CONTATO & HORÁRIO</h4>
+        <p><i class="fa-brands fa-whatsapp"></i> ${phoneDisplay} (${cfg.brand?.ownerOrContactPerson || 'Atendimento'})</p>
+        <p><i class="fa-regular fa-clock"></i> ${c.workingHours || '18h às 23h'}</p>
+        <p><i class="fa-solid fa-location-dot"></i> ${c.addressShort || c.address || ''}</p>
+      `;
+    }
+  }
+
+  // 5. Regiões de Entrega e Alerta de Cobertura
+  if (cfg.delivery) {
+    const del = cfg.delivery;
+    const covAlert = document.querySelector('.delivery-coverage-alert span');
+    if (covAlert && del.coverageAlertText) {
+      covAlert.innerHTML = del.coverageAlertText;
+    }
+
+    const sel = document.getElementById('deliveryRegion');
+    if (sel && del.regions && del.regions.length) {
+      sel.innerHTML = del.regions.map(r => `
+        <option value="${r.id}" data-fee="${r.fee}">${r.name}</option>
+      `).join('');
+    }
+  }
+}
+
 // Application State
 let currentCategory = 'all';
 let cart = JSON.parse(localStorage.getItem('arte_delicia_cart')) || [];
@@ -10,6 +240,7 @@ let orderType = 'delivery';
 
 // DOM Loaded Initialization
 document.addEventListener('DOMContentLoaded', () => {
+  applyRestaurantConfig();
   renderPizzaGrid();
   updateCartBadge();
   updateUserNavBadge();
@@ -179,10 +410,12 @@ window.getUserProfile = getUserProfile;
 
 // Combine all pizzas into a single array (sem bebidas)
 function getAllPizzas() {
+  const cfg = getConfig();
+  const m = cfg.menu || (typeof MENU_DATA !== 'undefined' ? MENU_DATA : {});
   return [
-    ...(MENU_DATA.pizzasClassicas || []),
-    ...(MENU_DATA.pizzasEspeciais || []),
-    ...(MENU_DATA.pizzasDoces || [])
+    ...(m.pizzasClassicas || []),
+    ...(m.pizzasEspeciais || []),
+    ...(m.pizzasDoces || [])
   ];
 }
 
@@ -208,6 +441,8 @@ function renderPizzaGrid() {
   const grid = document.getElementById('pizzaGrid');
   if (!grid) return;
 
+  const cfg = getConfig();
+  const menu = cfg.menu || (typeof MENU_DATA !== 'undefined' ? MENU_DATA : {});
   const sizeContainer = document.getElementById('sizePillsContainer');
   const searchQuery = document.getElementById('searchInput')?.value.toLowerCase() || '';
 
@@ -215,11 +450,11 @@ function renderPizzaGrid() {
   if (currentCategory === 'bebida') {
     if (sizeContainer) sizeContainer.style.display = 'none';
 
-    let bebidas = [...(MENU_DATA.bebidas || [])];
+    let bebidas = [...(menu.bebidas || [])];
     if (searchQuery.trim() !== '') {
       bebidas = bebidas.filter(b =>
         b.name.toLowerCase().includes(searchQuery) ||
-        b.description.toLowerCase().includes(searchQuery)
+        (b.description && b.description.toLowerCase().includes(searchQuery))
       );
     }
 
@@ -258,9 +493,9 @@ function renderPizzaGrid() {
   if (sizeContainer) sizeContainer.style.display = 'flex';
 
   let pizzas = getAllPizzas();
-  if (currentCategory === 'classica') pizzas = MENU_DATA.pizzasClassicas || [];
-  else if (currentCategory === 'especial') pizzas = MENU_DATA.pizzasEspeciais || [];
-  else if (currentCategory === 'doce') pizzas = MENU_DATA.pizzasDoces || [];
+  if (currentCategory === 'classica') pizzas = menu.pizzasClassicas || [];
+  else if (currentCategory === 'especial') pizzas = menu.pizzasEspeciais || [];
+  else if (currentCategory === 'doce') pizzas = menu.pizzasDoces || [];
 
   // Filtrar apenas pizzas disponíveis no tamanho selecionado (ex: Doces não têm GG)
   pizzas = pizzas.filter(p => p.prices && p.prices[currentMenuSize] != null);
@@ -301,7 +536,9 @@ function renderPizzaGrid() {
     const isFav = favorites.includes(pizza.id);
     const sizePrice = pizza.prices[currentMenuSize] || pizza.prices.G || 0;
     const priceFormatted = sizePrice.toFixed(2).replace('.', ',');
-    const sizeLabel = sizeLabelMap[currentMenuSize] || `Tamanho ${currentMenuSize}`;
+    const sizeLabel = (currentMenuSize === 'GG' && pizza.category === 'doce')
+      ? 'Tamanho GG (Até 1/3 doce • 3 Sabores)'
+      : (sizeLabelMap[currentMenuSize] || `Tamanho ${currentMenuSize}`);
 
     return `
       <div class="pizza-card-clean">
@@ -462,7 +699,13 @@ function openCustomizer(pizzaId, initialSize) {
   } else {
     selectedSize = 'G';
   }
-  flavorCount = 1;
+
+  // Regra: se a pizza for doce e o tamanho for GG, ela só pode ser montada em 3 sabores (até 1/3 doce)
+  if (selectedSize === 'GG' && selectedPizza.category === 'doce') {
+    flavorCount = 3;
+  } else {
+    flavorCount = 1;
+  }
 
   document.getElementById('modalPizzaTitle').innerText = selectedPizza.name;
   document.getElementById('modalIngredients').innerText = selectedPizza.ingredients;
@@ -470,7 +713,7 @@ function openCustomizer(pizzaId, initialSize) {
 
   populateSizeSelector();
   updateFlavorTabsForSize();
-  setFlavorCount(1);
+  setFlavorCount(flavorCount);
   populateFlavorDropdowns();
   updateCustomizerTotal();
 
@@ -487,8 +730,11 @@ function populateSizeSelector() {
   const container = document.getElementById('sizeSelector');
   if (!container || !selectedPizza) return;
 
+  const cfg = getConfig();
+  const menuSizes = (cfg.menu && cfg.menu.sizes) || (typeof MENU_DATA !== 'undefined' ? MENU_DATA.sizes : []);
+
   // Filtrar apenas os tamanhos que esta pizza possui
-  const availableSizes = MENU_DATA.sizes.filter(s => selectedPizza.prices[s.key] != null);
+  const availableSizes = menuSizes.filter(s => selectedPizza.prices && selectedPizza.prices[s.key] != null);
 
   // Se o tamanho atual não estiver disponível para esta pizza, seleciona o maior disponível (ex: G)
   if (selectedPizza.prices[selectedSize] == null && availableSizes.length > 0) {
@@ -512,6 +758,9 @@ function populateSizeSelector() {
 
 function selectSize(sizeKey) {
   selectedSize = sizeKey;
+  if (selectedSize === 'GG' && selectedPizza && selectedPizza.category === 'doce') {
+    flavorCount = 3;
+  }
   populateSizeSelector();
   updateFlavorTabsForSize();
   populateFlavorDropdowns();
@@ -519,15 +768,48 @@ function selectSize(sizeKey) {
 }
 
 function updateFlavorTabsForSize() {
+  const tab1 = document.getElementById('tab1Flavor');
+  const tab2 = document.getElementById('tab2Flavors');
   const tab3 = document.getElementById('tab3Flavors');
-  if (tab3) {
-    if (selectedSize === 'GG') {
-      tab3.style.display = 'flex';
-    } else {
-      tab3.style.display = 'none';
-      if (flavorCount === 3) {
-        setFlavorCount(2); // fallback if downgraded from GG
+  const hint = document.getElementById('flavorDivisionHint');
+
+  if (!selectedPizza) return;
+
+  const isSweet = selectedPizza.category === 'doce';
+
+  if (selectedSize === 'GG') {
+    if (tab3) tab3.style.display = 'flex';
+
+    if (isSweet) {
+      // Regra GG: Pizza doce no tamanho GG pode ficar com até um terço doce (3 sabores)
+      if (tab1) tab1.style.display = 'none';
+      if (tab2) tab2.style.display = 'none';
+      if (flavorCount !== 3) {
+        setFlavorCount(3);
       }
+      if (hint) {
+        hint.innerHTML = `<i class="fa-solid fa-circle-info"></i> No tamanho <strong>Família (GG)</strong>, pizzas doces são feitas exclusivamente na opção de <strong>3 Sabores (com até 1/3 doce)</strong>.`;
+        hint.style.color = 'var(--accent-yellow)';
+      }
+    } else {
+      if (tab1) tab1.style.display = 'flex';
+      if (tab2) tab2.style.display = 'flex';
+      if (hint) {
+        hint.innerText = 'O valor final da pizza será calculado pela média dos sabores escolhidos.';
+        hint.style.color = 'var(--accent-gold)';
+      }
+    }
+  } else {
+    // Tamanhos P, M, G
+    if (tab1) tab1.style.display = 'flex';
+    if (tab2) tab2.style.display = 'flex';
+    if (tab3) tab3.style.display = 'none';
+    if (flavorCount === 3) {
+      setFlavorCount(2); // fallback if downgraded from GG
+    }
+    if (hint) {
+      hint.innerText = 'O valor final da pizza será calculado pela média dos sabores escolhidos.';
+      hint.style.color = 'var(--accent-gold)';
     }
   }
 }
@@ -549,6 +831,7 @@ function setFlavorCount(count) {
     thirdGroup.style.display = count === 3 ? 'block' : 'none';
   }
 
+  populateFlavorDropdowns();
   updateCustomizerTotal();
 }
 
@@ -557,32 +840,87 @@ function populateFlavorDropdowns() {
   const select3 = document.getElementById('thirdFlavorSelect');
   if (!selectedPizza) return;
 
-  // Filtrar outras pizzas que também possuam preço para o tamanho selecionado
-  const otherPizzas = getAllPizzas().filter(p => p.id !== selectedPizza.id && p.prices[selectedSize] != null);
+  const allAvailable = getAllPizzas().filter(p => p.id !== selectedPizza.id && p.prices && p.prices[selectedSize] != null);
+  const savoryPizzas = allAvailable.filter(p => p.category !== 'doce');
 
-  // Show ONLY the price for the currently selected size
-  const optionsHtml = otherPizzas.map(p => {
-    const sizePrice = p.prices[selectedSize] || 0;
-    return `<option value="${p.id}">${p.name} (R$ ${sizePrice.toFixed(2).replace('.', ',')})</option>`;
-  }).join('');
+  let optionsP2 = allAvailable;
+  let optionsP3 = allAvailable;
+
+  if (selectedSize === 'GG') {
+    if (flavorCount === 2) {
+      // Meio a meio em GG só permite sabores salgados (pois doce só pode até 1/3)
+      optionsP2 = savoryPizzas;
+    } else if (flavorCount === 3) {
+      if (selectedPizza.category === 'doce') {
+        // Pizza principal já é doce: 2º e 3º sabores precisam ser salgados (máx. 1/3 doce)
+        optionsP2 = savoryPizzas;
+        optionsP3 = savoryPizzas;
+      } else {
+        // Pizza principal é salgada
+        // Sabor 2 pode ser salgado ou doce
+        const currentP2Val = select2 ? select2.value : null;
+        const p2Selected = allAvailable.find(p => p.id === currentP2Val);
+        if (p2Selected && p2Selected.category === 'doce') {
+          // Se 2º sabor for doce, o 3º sabor obrigatoriamente será salgado
+          optionsP3 = savoryPizzas;
+        } else {
+          optionsP3 = allAvailable;
+        }
+      }
+    }
+  }
 
   if (select2) {
     const currentVal2 = select2.value;
-    select2.innerHTML = optionsHtml;
-    if (currentVal2 && otherPizzas.some(p => p.id === currentVal2)) {
+    select2.innerHTML = optionsP2.map(p => {
+      const sizePrice = p.prices[selectedSize] || 0;
+      const isDoce = p.category === 'doce';
+      const badge = isDoce ? ' 🍰' : '';
+      return `<option value="${p.id}">${p.name}${badge} (R$ ${sizePrice.toFixed(2).replace('.', ',')})</option>`;
+    }).join('');
+
+    if (currentVal2 && optionsP2.some(p => p.id === currentVal2)) {
       select2.value = currentVal2;
+    } else if (optionsP2.length > 0) {
+      select2.selectedIndex = 0;
     }
   }
 
   if (select3) {
+    const activeP2Val = select2 ? select2.value : null;
+    const activeP2 = allAvailable.find(p => p.id === activeP2Val);
+    let filteredP3 = optionsP3;
+    if (selectedSize === 'GG' && flavorCount === 3) {
+      if (selectedPizza.category === 'doce' || (activeP2 && activeP2.category === 'doce')) {
+        filteredP3 = savoryPizzas.filter(p => p.id !== activeP2Val);
+      } else {
+        filteredP3 = allAvailable.filter(p => p.id !== activeP2Val);
+      }
+    }
+
     const currentVal3 = select3.value;
-    select3.innerHTML = optionsHtml;
-    if (currentVal3 && otherPizzas.some(p => p.id === currentVal3)) {
+    select3.innerHTML = filteredP3.map(p => {
+      const sizePrice = p.prices[selectedSize] || 0;
+      const isDoce = p.category === 'doce';
+      const badge = isDoce ? ' 🍰' : '';
+      return `<option value="${p.id}">${p.name}${badge} (R$ ${sizePrice.toFixed(2).replace('.', ',')})</option>`;
+    }).join('');
+
+    if (currentVal3 && filteredP3.some(p => p.id === currentVal3)) {
       select3.value = currentVal3;
-    } else if (otherPizzas.length > 1) {
+    } else if (filteredP3.length > 1) {
       select3.selectedIndex = 1;
+    } else if (filteredP3.length > 0) {
+      select3.selectedIndex = 0;
     }
   }
+}
+
+function handleSecondFlavorChange() {
+  if (selectedSize === 'GG' && flavorCount === 3) {
+    populateFlavorDropdowns();
+  }
+  updateCustomizerTotal();
 }
 
 // Global exposure for event handlers
@@ -590,6 +928,7 @@ window.openCustomizer = openCustomizer;
 window.openCustomizerModal = openCustomizer;
 window.setFlavorCount = setFlavorCount;
 window.selectSize = selectSize;
+window.handleSecondFlavorChange = handleSecondFlavorChange;
 
 function getCalculatedPrice() {
   if (!selectedPizza) return 0;
@@ -823,17 +1162,25 @@ window.changeDrinkQty = changeDrinkQty;
 function getDeliveryFee() {
   if (orderType !== 'delivery') return 0;
 
+  const cfg = getConfig();
+  const regions = (cfg.delivery && cfg.delivery.regions) || [];
   const regionSelect = document.getElementById('deliveryRegion');
-  const neighborhood = document.getElementById('deliveryNeighborhood')?.value.toLowerCase() || '';
-  const street = document.getElementById('deliveryStreet')?.value.toLowerCase() || '';
+  const neighborhood = document.getElementById('deliveryNeighborhood')?.value.toLowerCase().trim() || '';
+  const street = document.getElementById('deliveryStreet')?.value.toLowerCase().trim() || '';
 
-  if (regionSelect && (regionSelect.value === 'brito' || regionSelect.value === 'boca_do_forno')) {
-    return 2.00;
+  if (regionSelect && regionSelect.value) {
+    const selectedRegion = regions.find(r => r.id === regionSelect.value);
+    if (selectedRegion) return Number(selectedRegion.fee) || 0;
   }
 
-  if (neighborhood.includes('brito') || neighborhood.includes('boca do forno') ||
-      street.includes('brito') || street.includes('boca do forno')) {
-    return 2.00;
+  for (const r of regions) {
+    if (r.fee > 0 && r.keywords && r.keywords.length) {
+      for (const kw of r.keywords) {
+        if (neighborhood.includes(kw) || street.includes(kw)) {
+          return Number(r.fee) || 0;
+        }
+      }
+    }
   }
 
   return 0.00;
@@ -859,11 +1206,18 @@ function updateDeliveryFee() {
       if (feeLine) feeLine.style.display = 'none';
     } else {
       if (feeLine) feeLine.style.display = 'flex';
+      const cfg = getConfig();
+      const regions = (cfg.delivery && cfg.delivery.regions) || [];
+      const regionSelect = document.getElementById('deliveryRegion');
+      const selectedRegion = regions.find(r => r.id === regionSelect?.value);
+
       if (fee > 0) {
-        feeEl.innerText = `R$ ${fee.toFixed(2).replace('.', ',')} (Brito / Boca do Forno)`;
+        const regionLabel = selectedRegion?.shortLabel || selectedRegion?.name || 'Taxa de Entrega';
+        feeEl.innerText = `R$ ${fee.toFixed(2).replace('.', ',')} (${regionLabel})`;
         feeEl.style.color = 'var(--accent-yellow)';
       } else {
-        feeEl.innerText = 'Grátis (Itaiçaba Sede)';
+        const freeLabel = cfg.delivery?.defaultFreeLabel || (selectedRegion?.shortLabel ? `Grátis (${selectedRegion.shortLabel})` : 'Grátis');
+        feeEl.innerText = freeLabel;
         feeEl.style.color = '#51cf66';
       }
     }
@@ -874,13 +1228,21 @@ function updateDeliveryFee() {
 }
 
 function detectNeighborhoodFee() {
-  const neighborhood = document.getElementById('deliveryNeighborhood')?.value.toLowerCase() || '';
+  const neighborhood = document.getElementById('deliveryNeighborhood')?.value.toLowerCase().trim() || '';
   const regionSelect = document.getElementById('deliveryRegion');
-  if (regionSelect) {
-    if (neighborhood.includes('brito')) {
-      regionSelect.value = 'brito';
-    } else if (neighborhood.includes('boca do forno') || neighborhood.includes('forno')) {
-      regionSelect.value = 'boca_do_forno';
+  if (!regionSelect || !neighborhood) return;
+
+  const cfg = getConfig();
+  const regions = (cfg.delivery && cfg.delivery.regions) || [];
+  for (const r of regions) {
+    if (r.keywords && r.keywords.length) {
+      for (const kw of r.keywords) {
+        if (neighborhood.includes(kw)) {
+          regionSelect.value = r.id;
+          updateDeliveryFee();
+          return;
+        }
+      }
     }
   }
   updateDeliveryFee();
@@ -1069,8 +1431,9 @@ function sendOrderToWhatsApp() {
     });
   }
 
+  const cfg = getConfig();
   const messageText = generateWhatsAppMessageFromJSON(orderJSON);
-  const phone = MENU_DATA.phoneWhatsApp || "5588993345987";
+  const phone = (cfg.contact && cfg.contact.phoneWhatsApp) || (typeof MENU_DATA !== 'undefined' ? MENU_DATA.phoneWhatsApp : "5588993345987");
 
   // Limpa o carrinho e fecha o modal
   cart = [];
@@ -1084,6 +1447,10 @@ function sendOrderToWhatsApp() {
 
 // Função de decodificação e montagem do texto com emojis via CodePoint
 function generateWhatsAppMessageFromJSON(data) {
+  const cfg = getConfig();
+  const brandName = cfg.brand?.name || "RESTAURANTE E PIZZARIA ARTE & DELÍCIA";
+  const contactPerson = cfg.brand?.ownerOrContactPerson || "";
+
   const E_PIZZA = String.fromCodePoint(0x1F355);  // 🍕
   const E_USER = String.fromCodePoint(0x1F464);   // 👤
   const E_PHONE = String.fromCodePoint(0x1F4F1);  // 📱
@@ -1099,8 +1466,10 @@ function generateWhatsAppMessageFromJSON(data) {
 
   const LINE = '------------------------------------------';
 
-  let txt = `${E_PIZZA} *NOVO PEDIDO - RESTAURANTE E PIZZARIA ARTE & DELÍCIA*\n`;
-  txt += `_Aos cuidados de Simonny_\n`;
+  let txt = `${E_PIZZA} *NOVO PEDIDO - ${brandName.toUpperCase()}*\n`;
+  if (contactPerson) {
+    txt += `_Aos cuidados de ${contactPerson}_\n`;
+  }
   txt += `${LINE}\n\n`;
 
   txt += `${E_USER} *CLIENTE:* ${data.customer}\n`;
@@ -1116,10 +1485,15 @@ function generateWhatsAppMessageFromJSON(data) {
     if (data.address.complement) {
       txt += `${E_DOT} *Complemento:* ${data.address.complement}\n`;
     }
+    const regions = (cfg.delivery && cfg.delivery.regions) || [];
+    const regionSelect = document.getElementById('deliveryRegion');
+    const selectedRegion = regions.find(r => r.id === regionSelect?.value);
+    const regionLabel = selectedRegion?.shortLabel || selectedRegion?.name || '';
+
     if (data.deliveryFee > 0) {
-      txt += `${E_MOTO} *Taxa de Entrega:* R$ ${data.deliveryFee.toFixed(2).replace('.', ',')} (Alto do Brito / Boca do Forno)\n`;
+      txt += `${E_MOTO} *Taxa de Entrega:* R$ ${data.deliveryFee.toFixed(2).replace('.', ',')}${regionLabel ? ' (' + regionLabel + ')' : ''}\n`;
     } else {
-      txt += `${E_MOTO} *Taxa de Entrega:* Grátis (Itaiçaba Sede)\n`;
+      txt += `${E_MOTO} *Taxa de Entrega:* ${cfg.delivery?.defaultFreeLabel || 'Grátis'}\n`;
     }
     txt += `\n`;
   }
@@ -1195,6 +1569,11 @@ function dispatchWhatsApp(phone, messageText) {
 // Reservation Form Handler
 function handleReservationSubmit(e) {
   e.preventDefault();
+  const cfg = getConfig();
+  const brandShort = cfg.brand?.shortName || cfg.brand?.name || "RESTAURANTE";
+  const contactPerson = cfg.brand?.ownerOrContactPerson || "";
+  const phone = (cfg.contact && cfg.contact.phoneWhatsApp) || "5588993345987";
+
   const name = document.getElementById('resName')?.value;
   const phoneInput = document.getElementById('resPhone')?.value;
   const guests = document.getElementById('resGuests')?.value;
@@ -1216,8 +1595,10 @@ function handleReservationSubmit(e) {
   const E_CLOCK = String.fromCodePoint(0x23F0);  // ⏰
   const LINE = '------------------------------------------';
 
-  let msg = `${E_CAL} *SOLICITAÇÃO DE RESERVA / EVENTO - ARTE & DELÍCIA*\n`;
-  msg += `_Aos cuidados de Simonny_\n`;
+  let msg = `${E_CAL} *SOLICITAÇÃO DE RESERVA / EVENTO - ${brandShort.toUpperCase()}*\n`;
+  if (contactPerson) {
+    msg += `_Aos cuidados de ${contactPerson}_\n`;
+  }
   msg += `${LINE}\n\n`;
   msg += `${E_USER} *Nome:* ${reservationJSON.name}\n`;
   msg += `${E_PHONE} *Telefone:* ${reservationJSON.phone}\n`;
@@ -1225,9 +1606,8 @@ function handleReservationSubmit(e) {
   msg += `${E_CAL} *Data:* ${reservationJSON.date}\n`;
   msg += `${E_CLOCK} *Horário:* ${reservationJSON.time}\n\n`;
   msg += `${LINE}\n`;
-  msg += `Olá Simonny, gostaria de confirmar a disponibilidade para esta reserva.`;
+  msg += `Olá${contactPerson ? ' ' + contactPerson : ''}, gostaria de confirmar a disponibilidade para esta reserva.`;
 
-  const phone = MENU_DATA.phoneWhatsApp || "5588993345987";
   dispatchWhatsApp(phone, msg);
 }
 

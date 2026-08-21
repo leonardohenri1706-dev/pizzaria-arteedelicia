@@ -1,15 +1,25 @@
 // Supabase Client Integration for Pizzaria Arte & Delícia
 // URL: https://wnyglprzohwuqrkbdgff.supabase.co
 
-const SUPABASE_CONFIG = {
-  url: "https://wnyglprzohwuqrkbdgff.supabase.co",
-  anonKey: "sb_publishable_Oo50PAkXhtKDKJ2is_aX4Q_U24T5DHm"
-};
+const SUPABASE_CONFIG = (function() {
+  if (typeof RESTAURANT_CONFIG !== 'undefined' && RESTAURANT_CONFIG.supabase) {
+    return RESTAURANT_CONFIG.supabase;
+  }
+  return {
+    enabled: true,
+    url: "https://wnyglprzohwuqrkbdgff.supabase.co",
+    anonKey: "sb_publishable_Oo50PAkXhtKDKJ2is_aX4Q_U24T5DHm"
+  };
+})();
 
 let supabaseClient = null;
 
 function initSupabase() {
-  if (window.supabase && typeof window.supabase.createClient === 'function') {
+  if (SUPABASE_CONFIG && SUPABASE_CONFIG.enabled === false) {
+    console.log('ℹ️ Supabase desabilitado no config.js.');
+    return;
+  }
+  if (window.supabase && typeof window.supabase.createClient === 'function' && SUPABASE_CONFIG.url && SUPABASE_CONFIG.anonKey) {
     try {
       supabaseClient = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
       console.log('✅ Supabase Conectado com Sucesso!');
