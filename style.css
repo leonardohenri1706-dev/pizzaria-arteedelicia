@@ -3091,11 +3091,12 @@ body {
    ========================================================================= */
 .floating-cart-bar {
   position: fixed;
-  bottom: calc(1.2rem + env(safe-area-inset-bottom, 0px));
+  bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
   left: 50%;
+  right: auto;
   transform: translateX(-50%) translateY(140px);
-  width: calc(100% - 1.8rem);
-  max-width: 540px;
+  width: calc(100% - 24px);
+  max-width: 520px;
   background: linear-gradient(135deg, rgba(31, 36, 45, 0.98), rgba(20, 23, 29, 0.98));
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
@@ -3111,6 +3112,7 @@ body {
   opacity: 0;
   pointer-events: none;
   transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-sizing: border-box;
 }
 
 .floating-cart-bar.active {
@@ -4908,10 +4910,18 @@ body {
   }
 
   .floating-cart-bar {
-    left: 12px;
-    right: 12px;
-    bottom: 12px;
-    padding: 0.75rem 1rem;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) translateY(140px);
+    width: calc(100% - 24px);
+    max-width: 500px;
+    bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    padding: 0.65rem 0.95rem;
+    box-sizing: border-box;
+  }
+
+  .floating-cart-bar.active {
+    transform: translateX(-50%) translateY(0) !important;
   }
 
   .floating-whatsapp-btn {
@@ -4952,6 +4962,38 @@ body {
 
   .auth-clear-btn, .auth-save-btn {
     width: 100%;
+  }
+
+  .floating-cart-bar {
+    width: calc(100% - 18px) !important;
+    padding: 0.6rem 0.8rem;
+  }
+
+  .floating-cart-icon-wrapper {
+    width: 38px;
+    height: 38px;
+    font-size: 1rem;
+  }
+
+  .floating-count-label {
+    font-size: 0.68rem;
+  }
+
+  .floating-total-price {
+    font-size: 1.05rem;
+  }
+
+  .floating-action-btn {
+    padding: 0.5rem 0.85rem;
+    gap: 6px;
+  }
+
+  .floating-btn-main-label {
+    font-size: 0.8rem;
+  }
+
+  .floating-btn-sub-label {
+    font-size: 0.58rem;
   }
 }
 
