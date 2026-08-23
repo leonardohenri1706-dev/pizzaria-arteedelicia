@@ -108,7 +108,7 @@ function applyRestaurantConfig() {
 
     const waTooltip = document.querySelector('.whatsapp-tooltip');
     if (waTooltip) {
-      waTooltip.innerText = `Fale com ${b.ownerOrContactPerson || 'a gente'}! 🍕`;
+      waTooltip.innerText = `Fale com ${b.ownerOrContactPerson || 'a gente'}!`;
     }
 
     const btnFinalize = document.querySelector('#cartModal .btn-primary');
@@ -521,33 +521,40 @@ function renderPizzaGrid() {
     'GG': 'Tamanho GG (12 fatias)'
   };
 
+  const catMap = { 'classica': 'Clássica', 'especial': 'Especial', 'doce': 'Doce' };
+
   grid.innerHTML = pizzas.map(pizza => {
     const isFav = favorites.includes(pizza.id);
     const sizePrice = pizza.prices[currentMenuSize] || pizza.prices.G || 0;
     const priceFormatted = sizePrice.toFixed(2).replace('.', ',');
     const sizeLabel = (currentMenuSize === 'GG' && pizza.category === 'doce')
-      ? 'Tamanho GG (Até 1/3 doce • 3 Sabores)'
+      ? 'GG (Até 1/3 doce • 3 Sabores)'
       : (sizeLabelMap[currentMenuSize] || `Tamanho ${currentMenuSize}`);
+    const catBadge = catMap[pizza.category] || 'Pizzas';
 
     return `
       <div class="pizza-card-clean">
-        <button class="fav-btn ${isFav ? 'active' : ''}" onclick="toggleFavorite('${pizza.id}', event)">
-          <i class="${isFav ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
-        </button>
-
-        <img src="${pizza.image}" alt="${pizza.name}" class="pizza-clean-img" loading="lazy">
-        
-        <h3 class="pizza-clean-title">${pizza.name}</h3>
-        <p class="pizza-clean-ingredients">${pizza.ingredients}</p>
-        
-        <div class="pizza-clean-footer">
-          <div class="price-container-clean">
-            <span class="size-label-clean">${sizeLabel}</span>
-            <div class="price-tag-clean">R$ ${priceFormatted}</div>
-          </div>
-          <button class="btn-add-cart-clean" onclick="openCustomizerModal('${pizza.id}', '${currentMenuSize}')">
-            <i class="fa-solid fa-cart-plus"></i> MONTAR PIZZA
+        <div class="pizza-card-image-wrap">
+          <span class="pizza-category-tag ${pizza.category}">${catBadge}</span>
+          <button class="fav-btn ${isFav ? 'active' : ''}" onclick="toggleFavorite('${pizza.id}', event)" aria-label="Favoritar pizza">
+            <i class="${isFav ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
           </button>
+          <img src="${pizza.image}" alt="${pizza.name}" class="pizza-clean-img" loading="lazy">
+        </div>
+        
+        <div class="pizza-card-body">
+          <h3 class="pizza-clean-title">${pizza.name}</h3>
+          <p class="pizza-clean-ingredients">${pizza.ingredients}</p>
+          
+          <div class="pizza-clean-footer">
+            <div class="price-container-clean">
+              <span class="size-label-clean">${sizeLabel}</span>
+              <div class="price-tag-clean">R$ ${priceFormatted}</div>
+            </div>
+            <button class="btn-add-cart-clean magnetic-btn" onclick="openCustomizerModal('${pizza.id}', '${currentMenuSize}')">
+              <span>Montar</span> <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
         </div>
       </div>
     `;
@@ -582,7 +589,7 @@ function addDrinkToCart(drinkId) {
 
   saveCart();
   updateCartBadge();
-  showCartToast(`${drink.name} adicionado! 🥤`, 'Toque aqui para ver seu carrinho');
+  showCartToast(`${drink.name} adicionado!`, 'Toque aqui para ver seu carrinho');
 
   // Feedback visual no botão
   const btn = event?.target?.closest('button');
@@ -951,7 +958,7 @@ function renderCustomizerDrinks() {
   container.innerHTML = drinks.map(d => {
     const qty = customizerState.drinks[d.id] || 0;
     const hasQty = qty > 0 ? 'has-qty' : '';
-    const imgHtml = d.image ? `<img src="${d.image}" alt="${d.name}" class="drink-card-img" loading="lazy">` : `<div class="drink-card-icon">${d.icon || '🥤'}</div>`;
+    const imgHtml = d.image ? `<img src="${d.image}" alt="${d.name}" class="drink-card-img" loading="lazy">` : `<div class="drink-card-icon"><i class="fa-solid fa-glass-water"></i></div>`;
 
     return `
       <div class="customizer-drink-card ${hasQty}">
@@ -1137,17 +1144,23 @@ function renderFlavorPickerGrid() {
     return;
   }
 
+  const catMap = { 'classica': 'Clássica', 'especial': 'Especial', 'doce': 'Doce' };
+
   container.innerHTML = pizzas.map(p => {
     const isSelected = currentSlotPizza && currentSlotPizza.id === p.id;
     const price = (p.prices[currentSize] || 0).toFixed(2).replace('.', ',');
-    const badge = p.category === 'doce' ? ' 🍰' : (p.category === 'especial' ? ' ⭐' : '');
+    const badgeText = catMap[p.category] || '';
 
     return `
       <div class="flavor-picker-item ${isSelected ? 'active-choice' : ''}" onclick="selectFlavorForSlot('${p.id}')">
         <div class="picker-item-left">
           <img src="${p.image}" alt="${p.name}" class="picker-item-img" loading="lazy">
           <div class="picker-item-info">
-            <h4 class="picker-item-title">${p.name}${badge} ${isSelected ? '<span style="font-size:0.75rem; color:var(--accent-green); font-weight:900;">(Atual)</span>' : ''}</h4>
+            <h4 class="picker-item-title">
+              ${p.name}
+              ${badgeText ? `<span class="picker-item-cat-badge ${p.category}">${badgeText}</span>` : ''}
+              ${isSelected ? '<span class="picker-item-selected-badge">Selecionado</span>' : ''}
+            </h4>
             <p class="picker-item-desc">${p.ingredients}</p>
           </div>
         </div>
@@ -1272,7 +1285,7 @@ function addCustomizedPizzaToCart() {
   // Exibir toast chamativo para o cliente
   const toastMsg = drinksAddedCount > 0 
     ? `${title} + ${drinksAddedCount} ${drinksAddedCount === 1 ? 'bebida' : 'bebidas'} adicionadas!` 
-    : `${title} adicionada! 🍕`;
+    : `${title} adicionada ao pedido!`;
   showCartToast(toastMsg, 'Toque aqui para ver seu pedido e finalizar');
 
   // Highlight cart button
@@ -1379,7 +1392,7 @@ function renderCartItems() {
       const total = (item.totalPrice || item.unitPrice * item.quantity).toFixed(2).replace('.', ',');
       return `
         <div class="cart-item-card">
-          ${item.image ? `<img src="${item.image}" alt="${item.name}" class="cart-item-img">` : `<div class="cart-drink-icon">${item.icon || '🥤'}</div>`}
+          ${item.image ? `<img src="${item.image}" alt="${item.name}" class="cart-item-img">` : `<div class="cart-drink-icon"><i class="fa-solid fa-glass-water"></i></div>`}
           <div class="cart-item-details">
             <div class="cart-item-name">${item.name}</div>
             <div class="cart-item-meta"><span class="badge-size">Bebida</span></div>
