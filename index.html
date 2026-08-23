@@ -32,7 +32,7 @@
         <span>✨ Mais de 13 anos de tradição e sabor servindo Itaiçaba com carinho!</span>
       </div>
       <div class="top-socials d-none-mobile">
-        <a href="https://wa.me/5588993345987" target="_blank"><i class="fa-brands fa-whatsapp"></i> (88) 99334-5987</a>
+        <span><i class="fa-solid fa-phone"></i> (88) 99334-5987</span>
       </div>
     </div>
   </div>
@@ -122,8 +122,8 @@
             <button class="btn-hero-primary magnetic-btn" onclick="scrollToCatalogAndAnimate('all')">
               QUERO MONTAR MINHA PIZZA <i class="fa-solid fa-pizza-slice"></i>
             </button>
-            <a href="https://wa.me/5588993345987?text=Olá%20Simonny,%20gostaria%20de%20fazer%20um%20pedido%20na%20Arte%20&%20Delícia!" target="_blank" class="btn-hero-secondary magnetic-btn">
-              <i class="fa-brands fa-whatsapp"></i> Falar com Simonny
+            <a href="#sobre" class="btn-hero-secondary magnetic-btn">
+              <i class="fa-solid fa-store"></i> CONHECER NOSSO ESPAÇO
             </a>
           </div>
 
@@ -211,17 +211,17 @@
             </div>
           </div>
           <div class="about-badge-item">
-            <i class="fa-brands fa-whatsapp"></i>
+            <i class="fa-solid fa-face-smile"></i>
             <div>
-              <strong>Atendimento da Simonny</strong>
-              <span>Carinho e atenção em cada pedido</span>
+              <strong>Atendimento com Carinho</strong>
+              <span>Atenção e dedicação em cada receita</span>
             </div>
           </div>
         </div>
 
         <div class="about-cta-bar">
           <button class="btn-hero-primary magnetic-btn" onclick="scrollToCatalogAndAnimate('all')">VER CARDÁPIO COMPLETO <i class="fa-solid fa-arrow-right"></i></button>
-          <a href="https://wa.me/5588993345987?text=Olá%20Simonny,%20gostaria%20de%20saber%20mais%20sobre%20a%20pizzaria!" target="_blank" class="btn-hero-secondary magnetic-btn"><i class="fa-brands fa-whatsapp"></i> FALAR COM A SIMONNY</a>
+          <a href="#reservas" class="btn-hero-secondary magnetic-btn"><i class="fa-solid fa-calendar-check"></i> RESERVAR UMA MESA</a>
         </div>
       </div>
 
@@ -290,8 +290,8 @@
         <h2>BATEU AQUELA VONTADE DE UMA PIZZA INCRÍVEL?</h2>
         <p>Não passe vontade hoje! Escolha seus sabores favoritos, monte meio a meio e receba tudo quentinho com a rapidez e o carinho do atendimento da Simonny.</p>
         <div class="cta-buttons-group">
-          <button class="btn-cta-gold magnetic-btn" onclick="scrollToCatalogAndAnimate('all')">ESCOLHER NO CARDÁPIO <i class="fa-solid fa-pizza-slice"></i></button>
-          <a href="https://wa.me/5588993345987?text=Olá%20Simonny,%20quero%20fazer%20um%20pedido%20agora!" target="_blank" class="btn-cta-whatsapp magnetic-btn"><i class="fa-brands fa-whatsapp"></i> PEDIR AGORA NO WHATSAPP</a>
+          <button class="btn-cta-gold magnetic-btn" onclick="scrollToCatalogAndAnimate('all')">MONTAR MEU PEDIDO ONLINE <i class="fa-solid fa-pizza-slice"></i></button>
+          <button class="btn-cta-outline magnetic-btn" onclick="openCartModal()"><i class="fa-solid fa-cart-shopping"></i> VER MEU CARRINHO</button>
         </div>
       </div>
     </div>
@@ -331,6 +331,20 @@
         <span class="pill-icon">🥤</span>
         <span>BEBIDAS</span>
       </button>
+    </div>
+
+    <!-- Banner Destaque: Montador de Pedido Personalizado -->
+    <div class="custom-pizza-cta-banner">
+      <div class="custom-pizza-cta-content">
+        <div class="custom-pizza-cta-text">
+          <span class="custom-cta-tag"><i class="fa-solid fa-wand-magic-sparkles"></i> Monte do Seu Jeito</span>
+          <h3>Quer montar seu pedido personalizado completo?</h3>
+          <p>Escolha o tamanho da pizza, combine metades de sabores, selecione a borda e adicione bebidas geladas tudo junto!</p>
+        </div>
+        <button class="btn-open-builder-banner magnetic-btn" onclick="openCustomizerModal('calabresa', currentMenuSize)">
+          <i class="fa-solid fa-utensils"></i> MONTAR PEDIDO PERSONALIZADO <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
     </div>
 
     <!-- Seletor de Tamanho das Pizzas -->
@@ -520,9 +534,9 @@
       </div>
 
       <div class="why-box">
-        <div class="why-icon"><i class="fa-brands fa-whatsapp"></i></div>
-        <h4>ATENDIMENTO DA SIMONNY</h4>
-        <p>Atenção especial e carinho em cada detalhe do seu pedido.</p>
+        <div class="why-icon"><i class="fa-solid fa-heart"></i></div>
+        <h4>RECEITAS COM AMOR</h4>
+        <p>Atenção especial e carinho artesanal em cada detalhe da sua pizza.</p>
       </div>
     </div>
   </section>
@@ -570,18 +584,18 @@
     </div>
   </section>
 
-  <!-- Fale com a Simonny / Newsletter Section -->
+  <!-- Como Funciona o Pedido Online Section -->
   <section class="newsletter-banner-section main-container">
     <div class="newsletter-card">
-      <div class="news-icon"><i class="fa-brands fa-whatsapp"></i></div>
+      <div class="news-icon"><i class="fa-solid fa-mobile-screen-button"></i></div>
       <div class="news-text">
-        <h3>TEM DÚVIDAS OU QUER UM PEDIDO PERSONALIZADO?</h3>
-        <p>Fale diretamente com a Simonny pelo WhatsApp: <strong>(88) 99334-5987</strong>. Estamos prontos para te atender!</p>
+        <h3>COMO FUNCIONA O NOSSO PEDIDO ONLINE?</h3>
+        <p>Escolha suas pizzas favoritas no cardápio, monte sabores meio a meio, adicione ao carrinho e finalize seu pedido direto no WhatsApp com rapidez e segurança!</p>
       </div>
       <div class="news-action">
-        <a href="https://wa.me/5588993345987?text=Olá%20Simonny,%20estou%20no%20site%20e%20gostaria%20de%20fazer%20um%20pedido!" target="_blank" class="btn-news-whatsapp">
-          FALAR NO WHATSAPP <i class="fa-solid fa-arrow-right"></i>
-        </a>
+        <button onclick="scrollToCatalogAndAnimate('all')" class="btn-news-whatsapp">
+          FAZER MEU PEDIDO AGORA <i class="fa-solid fa-arrow-right"></i>
+        </button>
       </div>
     </div>
   </section>
@@ -647,75 +661,237 @@
     </div>
   </footer>
 
-  <!-- Floating Mobile Cart Bar -->
-  <div class="floating-cart-bar" id="floatingCartBar" onclick="openCartModal()">
-    <div class="floating-info">
-      <span class="floating-icon">🛒</span>
-      <span class="floating-count" id="floatCount">0 itens</span>
+  <!-- Barra Flutuante de Carrinho & Finalização Rápida no Mobile -->
+  <div class="floating-cart-bar" id="floatingCartBar" onclick="openCartModal()" aria-label="Ver Carrinho e Finalizar Pedido">
+    <div class="floating-left">
+      <div class="floating-cart-icon-wrapper">
+        <i class="fa-solid fa-cart-shopping"></i>
+        <span class="floating-badge-bubble" id="floatBubble">0</span>
+      </div>
+      <div class="floating-text-info">
+        <span class="floating-count-label" id="floatCount">0 itens no pedido</span>
+        <strong class="floating-total-price" id="floatTotal">R$ 0,00</strong>
+      </div>
     </div>
-    <div class="floating-total">
-      <span id="floatTotal">R$ 0,00</span>
+    <div class="floating-action-btn">
+      <div class="floating-btn-text-block">
+        <span class="floating-btn-main-label">FINALIZAR</span>
+        <small class="floating-btn-sub-label">Clique aqui para finalizar seu pedido</small>
+      </div>
       <i class="fa-solid fa-arrow-right"></i>
     </div>
   </div>
 
-  <!-- Pizza Customizer Modal -->
+  <!-- Toast de Notificação de Item Adicionado -->
+  <div class="cart-toast-notification" id="cartToast" onclick="openCartModal()">
+    <div class="toast-icon"><i class="fa-solid fa-circle-check"></i></div>
+    <div class="toast-content">
+      <strong id="toastTitle">Pizza adicionada ao carrinho! 🍕</strong>
+      <span id="toastSubtitle">Toque aqui para ver e finalizar o pedido</span>
+    </div>
+    <button class="toast-btn-action">VER PEDIDO <i class="fa-solid fa-arrow-right"></i></button>
+  </div>
+
+  <!-- Montador de Pedido Personalizado (Pizza + Sabores + Bordas + Bebidas) -->
   <div class="modal-overlay" id="customizerModal">
-    <div class="modal-card">
-      <div class="modal-header">
-        <h3 id="modalPizzaTitle">Nome da Pizza</h3>
+    <div class="modal-card customizer-modal-card">
+      <div class="modal-header customizer-header">
+        <div class="customizer-header-title">
+          <span class="customizer-badge"><i class="fa-solid fa-utensils"></i> Montador de Pedido Personalizado</span>
+          <h3 id="modalPizzaTitle">Monte seu Pedido Personalizado</h3>
+        </div>
         <button class="btn-close" onclick="closeCustomizerModal()"><i class="fa-solid fa-xmark"></i></button>
       </div>
       
-      <div class="modal-body">
-        <p class="modal-ingredients" id="modalIngredients">Ingredientes...</p>
-        
-        <div class="option-title"><i class="fa-solid fa-ruler-combined"></i> Escolha o Tamanho:</div>
-        <div class="size-selector" id="sizeSelector">
-          <!-- Dynamically populated sizes -->
-        </div>
-
-        <!-- Divisão de Sabores -->
-        <div class="flavor-division-section">
-          <div class="option-title"><i class="fa-solid fa-pizza-slice"></i> Divisão de Sabores:</div>
-          <div class="flavor-division-tabs" id="flavorDivisionTabs">
-            <button type="button" class="btn-flavor-tab active" id="tab1Flavor" onclick="setFlavorCount(1)">1 Sabor (Inteira)</button>
-            <button type="button" class="btn-flavor-tab" id="tab2Flavors" onclick="setFlavorCount(2)">2 Sabores (Meio a Meio)</button>
-            <button type="button" class="btn-flavor-tab" id="tab3Flavors" onclick="setFlavorCount(3)" style="display: none;">3 Sabores (1/3 cada)</button>
+      <div class="modal-body customizer-modal-body">
+        <!-- Passo 1: Tamanho -->
+        <div class="builder-step-block">
+          <div class="builder-step-header">
+            <span class="step-num">1</span>
+            <div class="step-text">
+              <strong>Escolha o Tamanho da Pizza</strong>
+              <small>Quantas pessoas vão saborear?</small>
+            </div>
           </div>
-          <p class="flavor-division-hint" id="flavorDivisionHint">O valor final da pizza será calculado pela média dos sabores escolhidos.</p>
+          <div class="size-selector-grid" id="sizeSelector">
+            <!-- Renderizado dinamicamente -->
+          </div>
         </div>
 
-        <!-- Seletor 2º Sabor -->
-        <div class="additional-flavor-group" id="secondFlavorGroup" style="display: none; margin-top: 1rem;">
-          <label style="font-size: 0.82rem; font-weight: 700; color: #fff; display: block; margin-bottom: 0.4rem;">
-            <i class="fa-solid fa-circle-dot" style="color: var(--accent-gold);"></i> 2º Sabor da Pizza:
-          </label>
-          <select class="select-input" id="secondFlavorSelect" onchange="handleSecondFlavorChange()"></select>
+        <!-- Passo 2: Divisão de Sabores -->
+        <div class="builder-step-block">
+          <div class="builder-step-header">
+            <span class="step-num">2</span>
+            <div class="step-text">
+              <strong>Quantos Sabores você deseja?</strong>
+              <small>Escolha se quer 1 sabor ou dividir em metades</small>
+            </div>
+          </div>
+          <div class="flavor-count-pills" id="flavorDivisionTabs">
+            <button type="button" class="btn-flavor-count-pill active" id="tab1Flavor" onclick="setFlavorCount(1)">
+              <span class="pill-dot"></span>
+              <strong>1 Sabor Inteiro</strong>
+              <small>100% da pizza</small>
+            </button>
+            <button type="button" class="btn-flavor-count-pill" id="tab2Flavors" onclick="setFlavorCount(2)">
+              <span class="pill-dot"></span>
+              <strong>2 Sabores</strong>
+              <small>Meio a Meio (50% / 50%)</small>
+            </button>
+            <button type="button" class="btn-flavor-count-pill" id="tab3Flavors" onclick="setFlavorCount(3)" style="display: none;">
+              <span class="pill-dot"></span>
+              <strong>3 Sabores</strong>
+              <small>1/3 cada (Exclusivo GG)</small>
+            </button>
+          </div>
+          <div class="flavor-division-hint-box" id="flavorDivisionHintBox">
+            <i class="fa-solid fa-calculator"></i>
+            <span id="flavorDivisionHint">O valor da pizza meio a meio é calculado pela média dos sabores escolhidos.</span>
+          </div>
         </div>
 
-        <!-- Seletor 3º Sabor (Apenas GG) -->
-        <div class="additional-flavor-group" id="thirdFlavorGroup" style="display: none; margin-top: 1rem;">
-          <label style="font-size: 0.82rem; font-weight: 700; color: #fff; display: block; margin-bottom: 0.4rem;">
-            <i class="fa-solid fa-circle-dot" style="color: var(--accent-yellow);"></i> 3º Sabor da Pizza (Exclusivo GG):
-          </label>
-          <select class="select-input" id="thirdFlavorSelect" onchange="updateCustomizerTotal()"></select>
+        <!-- Passo 3: Sabores Selecionados (Cards Interativos para Trocar Qualquer Sabor) -->
+        <div class="builder-step-block">
+          <div class="builder-step-header">
+            <span class="step-num">3</span>
+            <div class="step-text">
+              <strong>Seus Sabores Selecionados</strong>
+              <small>Toque em "Trocar Sabor" em qualquer metade para alterar</small>
+            </div>
+          </div>
+
+          <!-- Slots de Sabores (Cards com foto, nome, ingredientes e botão "Trocar Sabor") -->
+          <div class="flavor-slots-container" id="flavorSlotsContainer">
+            <!-- Renderizado dinamicamente via app.js -->
+          </div>
         </div>
 
-        <div class="form-group">
-          <label>Observações / Modificações (ex: sem cebola, borda caprichada)</label>
-          <input type="text" class="form-control" id="pizzaNotes" placeholder="Digite aqui suas observações...">
+        <!-- Passo 4: Escolha da Borda Recheada -->
+        <div class="builder-step-block">
+          <div class="builder-step-header">
+            <span class="step-num">4</span>
+            <div class="step-text">
+              <strong>Escolha sua Borda Recheada (Inclusa Sem Acréscimo)</strong>
+              <small>Catupiry e Cheddar já inclusos no valor da pizza!</small>
+            </div>
+          </div>
+          <div class="crust-options-grid" id="crustOptionsGrid">
+            <div class="crust-option-card active" id="crust-catupiry" onclick="selectCrust('catupiry')">
+              <div class="crust-radio-circle"><i class="fa-solid fa-check"></i></div>
+              <div class="crust-info">
+                <span class="crust-title">Borda de Catupiry</span>
+                <span class="crust-price" style="color: var(--accent-green);">Inclusa (Grátis)</span>
+              </div>
+            </div>
+            <div class="crust-option-card" id="crust-cheddar" onclick="selectCrust('cheddar')">
+              <div class="crust-radio-circle"><i class="fa-solid fa-check"></i></div>
+              <div class="crust-info">
+                <span class="crust-title">Borda de Cheddar Cremoso</span>
+                <span class="crust-price" style="color: var(--accent-green);">Inclusa (Grátis)</span>
+              </div>
+            </div>
+            <div class="crust-option-card" id="crust-nenhuma" onclick="selectCrust('nenhuma')">
+              <div class="crust-radio-circle"><i class="fa-solid fa-check"></i></div>
+              <div class="crust-info">
+                <span class="crust-title">Tradicional (Sem Recheio na Borda)</span>
+                <span class="crust-price" style="color: var(--accent-green);">Inclusa (Grátis)</span>
+              </div>
+            </div>
+            <div class="crust-option-card" id="crust-chocolate" onclick="selectCrust('chocolate')">
+              <div class="crust-radio-circle"><i class="fa-solid fa-check"></i></div>
+              <div class="crust-info">
+                <span class="crust-title">Borda Doce de Chocolate</span>
+                <span class="crust-price" id="crustChocolatePriceTag">+ R$ 4,00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Passo 5: Observações Rápidas -->
+        <div class="builder-step-block">
+          <div class="builder-step-header">
+            <span class="step-num">5</span>
+            <div class="step-text">
+              <strong>Observações & Preferências</strong>
+              <small>Toque nas opções rápidas ou digite como prefere</small>
+            </div>
+          </div>
+          <div class="quick-notes-chips">
+            <button type="button" class="quick-chip" onclick="toggleQuickNote('Sem Verdura')"><i class="fa-solid fa-plus"></i> Sem Verdura</button>
+            <button type="button" class="quick-chip" onclick="toggleQuickNote('Sem Cebola')"><i class="fa-solid fa-plus"></i> Sem Cebola</button>
+            <button type="button" class="quick-chip" onclick="toggleQuickNote('Sem Tomate')"><i class="fa-solid fa-plus"></i> Sem Tomate</button>
+            <button type="button" class="quick-chip" onclick="toggleQuickNote('Sem Borda')"><i class="fa-solid fa-plus"></i> Sem Borda</button>
+            <button type="button" class="quick-chip" onclick="toggleQuickNote('Bem Assada')"><i class="fa-solid fa-plus"></i> Bem Assada</button>
+            <button type="button" class="quick-chip" onclick="toggleQuickNote('Mais Orégano')"><i class="fa-solid fa-plus"></i> Mais Orégano</button>
+          </div>
+          <div class="form-group" style="margin-top: 0.8rem;">
+            <input type="text" class="form-control" id="pizzaNotes" placeholder="Digite aqui se deseja alguma observação específica...">
+          </div>
+        </div>
+
+        <!-- Passo 6: Bebidas Geladas (Opcional) -->
+        <div class="builder-step-block">
+          <div class="builder-step-header">
+            <span class="step-num">6</span>
+            <div class="step-text">
+              <strong>Deseja Adicionar Bebidas Geladas? (Opcional)</strong>
+              <small>Refrigerantes, sucos e água para acompanhar seu pedido</small>
+            </div>
+          </div>
+          <div class="customizer-drinks-grid" id="customizerDrinksGrid">
+            <!-- Renderizado dinamicamente via app.js -->
+          </div>
         </div>
       </div>
 
-      <div class="modal-footer">
-        <div class="total-display">
-          <span>Valor Total:</span>
-          <strong id="modalTotalPrice">R$ 0,00</strong>
+      <!-- Rodapé Fixo do Modal com Resumo e Botão Grande -->
+      <div class="modal-footer customizer-footer">
+        <div class="customizer-summary-box">
+          <div class="customizer-summary-text" id="customizerSummaryText">
+            Carregando resumo do pedido...
+          </div>
+          <div class="customizer-price-tag">
+            <span>Valor Total:</span>
+            <strong id="modalTotalPrice">R$ 0,00</strong>
+          </div>
         </div>
-        <button class="btn-primary" onclick="addCustomizedPizzaToCart()">
-          <i class="fa-solid fa-cart-plus"></i> Adicionar ao Carrinho
+        <button class="btn-primary btn-add-custom-pizza" onclick="addCustomizedPizzaToCart()">
+          <i class="fa-solid fa-cart-plus"></i> ADICIONAR PEDIDO AO CARRINHO
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sub-Modal / Seletor Visual de Sabor para a Metade -->
+  <div class="modal-overlay" id="flavorPickerModal" style="z-index: 1050;">
+    <div class="modal-card flavor-picker-modal-card">
+      <div class="modal-header flavor-picker-header">
+        <div>
+          <span class="picker-target-badge" id="pickerTargetBadge">Escolhendo Metade 1</span>
+          <h3 style="margin-top: 0.3rem;">Selecione o Sabor</h3>
+        </div>
+        <button class="btn-close" onclick="closeFlavorPickerModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      
+      <div class="modal-body flavor-picker-body">
+        <!-- Barra de Busca de Sabor -->
+        <div class="picker-search-bar">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="pickerSearchInput" placeholder="Buscar sabor por nome ou ingrediente..." oninput="filterPickerFlavors()">
+        </div>
+
+        <!-- Categorias Rápidas -->
+        <div class="picker-cat-pills">
+          <button type="button" class="picker-cat-btn active" id="pickerCat-all" onclick="setPickerCategory('all')">Todas as Pizzas</button>
+          <button type="button" class="picker-cat-btn" id="pickerCat-classica" onclick="setPickerCategory('classica')">Clássicas</button>
+          <button type="button" class="picker-cat-btn" id="pickerCat-especial" onclick="setPickerCategory('especial')">Especiais</button>
+          <button type="button" class="picker-cat-btn" id="pickerCat-doce" onclick="setPickerCategory('doce')">Doces</button>
+        </div>
+
+        <!-- Lista Visual de Sabores com Fotos e Ingredientes -->
+        <div class="flavor-picker-grid" id="flavorPickerGrid">
+          <!-- Renderizado dinamicamente pelo app.js -->
+        </div>
       </div>
     </div>
   </div>
@@ -833,7 +1009,7 @@
         </div>
       </div>
 
-      <div class="modal-footer">
+      <div class="modal-footer cart-modal-footer">
         <div class="cart-totals-breakdown">
           <div class="total-line subtotal-line">
             <span>Subtotal:</span>
@@ -848,8 +1024,11 @@
             <strong id="cartTotalPrice">R$ 0,00</strong>
           </div>
         </div>
-        <button class="btn-primary" onclick="sendOrderToWhatsApp()">
-          <i class="fa-brands fa-whatsapp"></i> Finalizar no WhatsApp com Simonny
+        <button class="btn-primary btn-finalize-order-highlight" onclick="sendOrderToWhatsApp()">
+          <div class="btn-finalize-content">
+            <span class="btn-finalize-main"><i class="fa-brands fa-whatsapp"></i> FINALIZAR PEDIDO NO WHATSAPP <i class="fa-solid fa-arrow-right"></i></span>
+            <small class="btn-finalize-subtext">Clique aqui para finalizar seu pedido</small>
+          </div>
         </button>
       </div>
     </div>
@@ -925,11 +1104,7 @@
     </div>
   </div>
 
-  <!-- Botão Flutuante de WhatsApp -->
-  <a href="https://wa.me/5588993345987?text=Olá%20Simonny,%20gostaria%20de%20fazer%20um%20pedido%20ou%20tirar%20uma%20dúvida!" target="_blank" class="floating-whatsapp-btn" aria-label="Falar no WhatsApp">
-    <div class="whatsapp-tooltip">Fale com a Simonny! 🍕</div>
-    <i class="fa-brands fa-whatsapp"></i>
-  </a>
+
 
   <!-- Scripts -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>

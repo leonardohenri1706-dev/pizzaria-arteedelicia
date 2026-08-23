@@ -106,11 +106,6 @@ function applyRestaurantConfig() {
     const heroDesc = document.querySelector('.hero-description');
     if (heroDesc && b.heroDescription) heroDesc.innerHTML = b.heroDescription;
 
-    const heroWaBtn = document.querySelector('.hero-actions .btn-hero-secondary');
-    if (heroWaBtn) {
-      heroWaBtn.innerHTML = `<i class="fa-brands fa-whatsapp"></i> Falar com ${b.ownerOrContactPerson || 'Atendente'}`;
-    }
-
     const waTooltip = document.querySelector('.whatsapp-tooltip');
     if (waTooltip) {
       waTooltip.innerText = `Fale com ${b.ownerOrContactPerson || 'a gente'}! 🍕`;
@@ -118,7 +113,7 @@ function applyRestaurantConfig() {
 
     const btnFinalize = document.querySelector('#cartModal .btn-primary');
     if (btnFinalize) {
-      btnFinalize.innerHTML = `<i class="fa-brands fa-whatsapp"></i> Finalizar no WhatsApp com ${b.ownerOrContactPerson || 'Atendimento'}`;
+      btnFinalize.innerHTML = `<i class="fa-brands fa-whatsapp"></i> ENVIAR PEDIDO PARA O WHATSAPP`;
     }
 
     const btnRes = document.querySelector('.btn-res-submit');
@@ -177,10 +172,9 @@ function applyRestaurantConfig() {
       a.href = `https://wa.me/${phone}?text=${greeting}`;
     });
 
-    const topSocial = document.querySelector('.top-socials a');
+    const topSocial = document.querySelector('.top-socials span, .top-socials a');
     if (topSocial) {
-      topSocial.innerHTML = `<i class="fa-brands fa-whatsapp"></i> ${phoneDisplay}`;
-      topSocial.href = `https://wa.me/${phone}`;
+      topSocial.innerHTML = `<i class="fa-solid fa-phone"></i> ${phoneDisplay}`;
     }
 
     const topInfoSpans = document.querySelectorAll('.top-info span');
@@ -193,11 +187,6 @@ function applyRestaurantConfig() {
     if (heroLocSpans.length >= 3) {
       if (c.addressShort || c.address) heroLocSpans[0].innerHTML = `<i class="fa-solid fa-location-dot"></i> ${c.addressShort || c.address}`;
       if (c.workingHoursShort || c.workingHours) heroLocSpans[2].innerHTML = `<i class="fa-regular fa-clock"></i> ${c.workingHoursShort || c.workingHours}`;
-    }
-
-    const newsText = document.querySelector('.news-text p');
-    if (newsText) {
-      newsText.innerHTML = `Fale diretamente com ${cfg.brand?.ownerOrContactPerson || 'nosso atendimento'} pelo WhatsApp: <strong>${phoneDisplay}</strong>. Estamos prontos para te atender!`;
     }
 
     const footerContact = document.querySelector('.footer-contact-col');
@@ -593,6 +582,7 @@ function addDrinkToCart(drinkId) {
 
   saveCart();
   updateCartBadge();
+  showCartToast(`${drink.name} adicionado! 🥤`, 'Toque aqui para ver seu carrinho');
 
   // Feedback visual no botão
   const btn = event?.target?.closest('button');
@@ -686,36 +676,58 @@ function filterPizzas() {
   renderPizzaGrid();
 }
 
-// Global Customizer State
-let flavorCount = 1;
+// =========================================================================
+// NOVO SISTEMA DE MONTAGEM & CUSTOMIZAÇÃO INTUITIVA DE PIZZAS
+// =========================================================================
+
+let customizerState = {
+  size: 'G',
+  flavorCount: 1,
+  flavors: [null, null, null], // [pizzaObj1, pizzaObj2, pizzaObj3]
+  crust: { id: 'catupiry', name: 'Borda Catupiry', price: 0 },
+  quickNotes: [],
+  notes: '',
+  drinks: {} // { drinkId: quantity }
+};
+
+let activePickerSlot = 0; // 0 (1º Sabor / Metade 1), 1 (2º Sabor / Metade 2), 2 (3º Sabor / Metade 3)
+let currentPickerCategory = 'all';
 
 function openCustomizer(pizzaId, initialSize) {
-  selectedPizza = getAllPizzas().find(p => p.id === pizzaId);
-  if (!selectedPizza) return;
-
+  const allPizzas = getAllPizzas();
+  let basePizza = allPizzas.find(p => p.id === pizzaId) || allPizzas[0];
+  
   const targetSize = initialSize || currentMenuSize || 'G';
-  if (selectedPizza.prices && selectedPizza.prices[targetSize] != null) {
-    selectedSize = targetSize;
+  customizerState.size = (basePizza && basePizza.prices && basePizza.prices[targetSize] != null) ? targetSize : 'G';
+  
+  // Sabor 1
+  customizerState.flavors[0] = basePizza;
+
+  // Sabor 2 default (se for diferente de sabor 1)
+  const defaultSecond = allPizzas.find(p => p.id !== basePizza.id && p.prices && p.prices[customizerState.size] != null && p.category !== 'doce') || allPizzas[1] || basePizza;
+  customizerState.flavors[1] = defaultSecond;
+
+  // Sabor 3 default (se for GG)
+  const defaultThird = allPizzas.find(p => p.id !== basePizza.id && p.id !== defaultSecond.id && p.prices && p.prices[customizerState.size] != null && p.category !== 'doce') || allPizzas[2] || basePizza;
+  customizerState.flavors[2] = defaultThird;
+
+  // Regra GG se for doce: 3 sabores
+  if (customizerState.size === 'GG' && basePizza.category === 'doce') {
+    customizerState.flavorCount = 3;
   } else {
-    selectedSize = 'G';
+    customizerState.flavorCount = 1;
   }
 
-  // Regra: se a pizza for doce e o tamanho for GG, ela só pode ser montada em 3 sabores (até 1/3 doce)
-  if (selectedSize === 'GG' && selectedPizza.category === 'doce') {
-    flavorCount = 3;
-  } else {
-    flavorCount = 1;
-  }
+  customizerState.crust = { id: 'catupiry', name: 'Borda Catupiry', price: 0 };
+  customizerState.quickNotes = [];
+  customizerState.drinks = {};
+  
+  const notesInput = document.getElementById('pizzaNotes');
+  if (notesInput) notesInput.value = '';
 
-  document.getElementById('modalPizzaTitle').innerText = selectedPizza.name;
-  document.getElementById('modalIngredients').innerText = selectedPizza.ingredients;
-  document.getElementById('pizzaNotes').value = '';
+  document.querySelectorAll('.quick-chip').forEach(btn => btn.classList.remove('active'));
 
-  populateSizeSelector();
-  updateFlavorTabsForSize();
-  setFlavorCount(flavorCount);
-  populateFlavorDropdowns();
-  updateCustomizerTotal();
+  renderCustomizerUI();
 
   const modal = document.getElementById('customizerModal');
   if (modal) modal.classList.add('active');
@@ -726,45 +738,58 @@ function closeCustomizerModal() {
   if (modal) modal.classList.remove('active');
 }
 
-function populateSizeSelector() {
+function renderCustomizerUI() {
+  renderSizeSelector();
+  updateFlavorTabsForSize();
+  renderFlavorSlots();
+  renderCrustOptions();
+  renderCustomizerDrinks();
+  updateCustomizerTotal();
+}
+
+function renderSizeSelector() {
   const container = document.getElementById('sizeSelector');
-  if (!container || !selectedPizza) return;
+  if (!container) return;
 
   const cfg = getConfig();
   const menuSizes = (cfg.menu && cfg.menu.sizes) || (typeof MENU_DATA !== 'undefined' ? MENU_DATA.sizes : []);
+  const p1 = customizerState.flavors[0];
+  if (!p1) return;
 
-  // Filtrar apenas os tamanhos que esta pizza possui
-  const availableSizes = menuSizes.filter(s => selectedPizza.prices && selectedPizza.prices[s.key] != null);
+  const availableSizes = menuSizes.filter(s => p1.prices && p1.prices[s.key] != null);
 
-  // Se o tamanho atual não estiver disponível para esta pizza, seleciona o maior disponível (ex: G)
-  if (selectedPizza.prices[selectedSize] == null && availableSizes.length > 0) {
-    selectedSize = availableSizes[availableSizes.length - 1].key;
+  // Se o tamanho atual não estiver disponível, seleciona o maior disponível
+  if (p1.prices[customizerState.size] == null && availableSizes.length > 0) {
+    customizerState.size = availableSizes[availableSizes.length - 1].key;
   }
 
   container.innerHTML = availableSizes.map(sizeObj => {
-    const price = selectedPizza.prices[sizeObj.key];
-    const isSelected = sizeObj.key === selectedSize ? 'selected' : '';
+    const isSelected = sizeObj.key === customizerState.size ? 'selected' : '';
+    const price = p1.prices[sizeObj.key] || 0;
 
     return `
-      <div class="size-btn ${isSelected}" onclick="selectSize('${sizeObj.key}')">
-        <div>
-          <span class="size-name">${sizeObj.label}</span>
+      <div class="size-card-option ${isSelected}" onclick="selectSize('${sizeObj.key}')">
+        <div class="size-card-info">
+          <strong>${sizeObj.label}</strong>
+          <small>${sizeObj.slices || ''}</small>
         </div>
-        <span class="size-price">R$ ${price.toFixed(2).replace('.', ',')}</span>
+        <span class="size-card-price">R$ ${price.toFixed(2).replace('.', ',')}</span>
       </div>
     `;
   }).join('');
 }
 
 function selectSize(sizeKey) {
-  selectedSize = sizeKey;
-  if (selectedSize === 'GG' && selectedPizza && selectedPizza.category === 'doce') {
-    flavorCount = 3;
+  customizerState.size = sizeKey;
+  
+  const p1 = customizerState.flavors[0];
+  if (customizerState.size === 'GG' && p1 && p1.category === 'doce') {
+    customizerState.flavorCount = 3;
+  } else if (customizerState.size !== 'GG' && customizerState.flavorCount === 3) {
+    customizerState.flavorCount = 2;
   }
-  populateSizeSelector();
-  updateFlavorTabsForSize();
-  populateFlavorDropdowns();
-  updateCustomizerTotal();
+
+  renderCustomizerUI();
 }
 
 function updateFlavorTabsForSize() {
@@ -773,246 +798,482 @@ function updateFlavorTabsForSize() {
   const tab3 = document.getElementById('tab3Flavors');
   const hint = document.getElementById('flavorDivisionHint');
 
-  if (!selectedPizza) return;
+  const p1 = customizerState.flavors[0];
+  const isSweet = p1 && p1.category === 'doce';
 
-  const isSweet = selectedPizza.category === 'doce';
-
-  if (selectedSize === 'GG') {
-    if (tab3) tab3.style.display = 'flex';
+  if (customizerState.size === 'GG') {
+    if (tab3) tab3.style.display = 'block';
 
     if (isSweet) {
-      // Regra GG: Pizza doce no tamanho GG pode ficar com até um terço doce (3 sabores)
       if (tab1) tab1.style.display = 'none';
       if (tab2) tab2.style.display = 'none';
-      if (flavorCount !== 3) {
-        setFlavorCount(3);
-      }
+      customizerState.flavorCount = 3;
       if (hint) {
-        hint.innerHTML = `<i class="fa-solid fa-circle-info"></i> No tamanho <strong>Família (GG)</strong>, pizzas doces são feitas exclusivamente na opção de <strong>3 Sabores (com até 1/3 doce)</strong>.`;
-        hint.style.color = 'var(--accent-yellow)';
+        hint.innerHTML = 'No tamanho <strong>Família (GG)</strong>, pizzas doces são montadas exclusivamente na opção de <strong>3 Sabores (com até 1/3 doce)</strong>.';
       }
     } else {
-      if (tab1) tab1.style.display = 'flex';
-      if (tab2) tab2.style.display = 'flex';
+      if (tab1) tab1.style.display = 'block';
+      if (tab2) tab2.style.display = 'block';
       if (hint) {
-        hint.innerText = 'O valor final da pizza será calculado pela média dos sabores escolhidos.';
-        hint.style.color = 'var(--accent-gold)';
+        hint.innerText = 'O valor da pizza meio a meio é calculado pela média exata dos sabores escolhidos.';
       }
     }
   } else {
-    // Tamanhos P, M, G
-    if (tab1) tab1.style.display = 'flex';
-    if (tab2) tab2.style.display = 'flex';
+    if (tab1) tab1.style.display = 'block';
+    if (tab2) tab2.style.display = 'block';
     if (tab3) tab3.style.display = 'none';
-    if (flavorCount === 3) {
-      setFlavorCount(2); // fallback if downgraded from GG
+    if (customizerState.flavorCount === 3) {
+      customizerState.flavorCount = 2;
     }
     if (hint) {
-      hint.innerText = 'O valor final da pizza será calculado pela média dos sabores escolhidos.';
-      hint.style.color = 'var(--accent-gold)';
+      hint.innerText = 'O valor da pizza meio a meio é calculado pela média exata dos sabores escolhidos.';
     }
   }
+
+  if (tab1) tab1.classList.toggle('active', customizerState.flavorCount === 1);
+  if (tab2) tab2.classList.toggle('active', customizerState.flavorCount === 2);
+  if (tab3) tab3.classList.toggle('active', customizerState.flavorCount === 3);
 }
 
 function setFlavorCount(count) {
-  flavorCount = count;
-  
-  document.getElementById('tab1Flavor')?.classList.toggle('active', count === 1);
-  document.getElementById('tab2Flavors')?.classList.toggle('active', count === 2);
-  document.getElementById('tab3Flavors')?.classList.toggle('active', count === 3);
-
-  const secondGroup = document.getElementById('secondFlavorGroup');
-  const thirdGroup = document.getElementById('thirdFlavorGroup');
-  
-  if (secondGroup) {
-    secondGroup.style.display = count >= 2 ? 'block' : 'none';
-  }
-  if (thirdGroup) {
-    thirdGroup.style.display = count === 3 ? 'block' : 'none';
-  }
-
-  populateFlavorDropdowns();
-  updateCustomizerTotal();
+  customizerState.flavorCount = count;
+  renderCustomizerUI();
 }
 
-function populateFlavorDropdowns() {
-  const select2 = document.getElementById('secondFlavorSelect');
-  const select3 = document.getElementById('thirdFlavorSelect');
-  if (!selectedPizza) return;
+function renderFlavorSlots() {
+  const container = document.getElementById('flavorSlotsContainer');
+  if (!container) return;
 
-  const allAvailable = getAllPizzas().filter(p => p.id !== selectedPizza.id && p.prices && p.prices[selectedSize] != null);
-  const savoryPizzas = allAvailable.filter(p => p.category !== 'doce');
+  const count = customizerState.flavorCount;
+  const currentSize = customizerState.size;
 
-  let optionsP2 = allAvailable;
-  let optionsP3 = allAvailable;
+  let slotsHtml = '';
 
-  if (selectedSize === 'GG') {
-    if (flavorCount === 2) {
-      // Meio a meio em GG só permite sabores salgados (pois doce só pode até 1/3)
-      optionsP2 = savoryPizzas;
-    } else if (flavorCount === 3) {
-      if (selectedPizza.category === 'doce') {
-        // Pizza principal já é doce: 2º e 3º sabores precisam ser salgados (máx. 1/3 doce)
-        optionsP2 = savoryPizzas;
-        optionsP3 = savoryPizzas;
-      } else {
-        // Pizza principal é salgada
-        // Sabor 2 pode ser salgado ou doce
-        const currentP2Val = select2 ? select2.value : null;
-        const p2Selected = allAvailable.find(p => p.id === currentP2Val);
-        if (p2Selected && p2Selected.category === 'doce') {
-          // Se 2º sabor for doce, o 3º sabor obrigatoriamente será salgado
-          optionsP3 = savoryPizzas;
-        } else {
-          optionsP3 = allAvailable;
-        }
-      }
-    }
+  for (let i = 0; i < count; i++) {
+    const pizza = customizerState.flavors[i] || customizerState.flavors[0];
+    const fractionLabel = count === 1 ? '100% da Pizza (Sabor Único)' : (count === 2 ? `Metade ${i + 1} (50%)` : `1/3 Parte ${i + 1} (33%)`);
+
+    slotsHtml += `
+      <div class="flavor-slot-card">
+        <div class="slot-left">
+          <img src="${pizza.image}" alt="${pizza.name}" class="slot-photo">
+          <div class="slot-details">
+            <span class="slot-fraction-tag">${fractionLabel}</span>
+            <h4 class="slot-name">${pizza.name} ${pizza.category === 'doce' ? '🍰' : ''}</h4>
+            <p class="slot-ingredients">${pizza.ingredients}</p>
+          </div>
+        </div>
+        <button type="button" class="btn-swap-flavor magnetic-btn" onclick="openFlavorPicker(${i})">
+          <i class="fa-solid fa-arrows-rotate"></i> Trocar Sabor
+        </button>
+      </div>
+    `;
   }
 
-  if (select2) {
-    const currentVal2 = select2.value;
-    select2.innerHTML = optionsP2.map(p => {
-      const sizePrice = p.prices[selectedSize] || 0;
-      const isDoce = p.category === 'doce';
-      const badge = isDoce ? ' 🍰' : '';
-      return `<option value="${p.id}">${p.name}${badge} (R$ ${sizePrice.toFixed(2).replace('.', ',')})</option>`;
-    }).join('');
+  container.innerHTML = slotsHtml;
+}
 
-    if (currentVal2 && optionsP2.some(p => p.id === currentVal2)) {
-      select2.value = currentVal2;
-    } else if (optionsP2.length > 0) {
-      select2.selectedIndex = 0;
-    }
+function getCrustPrice(crustId, size) {
+  if (crustId === 'chocolate') {
+    return size === 'GG' ? 6.00 : 4.00;
+  }
+  return 0.00;
+}
+
+function renderCrustOptions() {
+  document.querySelectorAll('.crust-option-card').forEach(card => {
+    card.classList.remove('active');
+  });
+  
+  const activeCard = document.getElementById(`crust-${customizerState.crust.id}`);
+  if (activeCard) activeCard.classList.add('active');
+
+  // Atualizar badge de preço do chocolate baseado no tamanho (GG = 6, outros = 4)
+  const chocPriceEl = document.getElementById('crustChocolatePriceTag');
+  if (chocPriceEl) {
+    const chocPrice = customizerState.size === 'GG' ? 6 : 4;
+    chocPriceEl.innerText = `+ R$ ${chocPrice.toFixed(2).replace('.', ',')}`;
   }
 
-  if (select3) {
-    const activeP2Val = select2 ? select2.value : null;
-    const activeP2 = allAvailable.find(p => p.id === activeP2Val);
-    let filteredP3 = optionsP3;
-    if (selectedSize === 'GG' && flavorCount === 3) {
-      if (selectedPizza.category === 'doce' || (activeP2 && activeP2.category === 'doce')) {
-        filteredP3 = savoryPizzas.filter(p => p.id !== activeP2Val);
-      } else {
-        filteredP3 = allAvailable.filter(p => p.id !== activeP2Val);
-      }
-    }
-
-    const currentVal3 = select3.value;
-    select3.innerHTML = filteredP3.map(p => {
-      const sizePrice = p.prices[selectedSize] || 0;
-      const isDoce = p.category === 'doce';
-      const badge = isDoce ? ' 🍰' : '';
-      return `<option value="${p.id}">${p.name}${badge} (R$ ${sizePrice.toFixed(2).replace('.', ',')})</option>`;
-    }).join('');
-
-    if (currentVal3 && filteredP3.some(p => p.id === currentVal3)) {
-      select3.value = currentVal3;
-    } else if (filteredP3.length > 1) {
-      select3.selectedIndex = 1;
-    } else if (filteredP3.length > 0) {
-      select3.selectedIndex = 0;
-    }
+  // Recalcular preço atual da borda se for chocolate
+  if (customizerState.crust.id === 'chocolate') {
+    customizerState.crust.price = getCrustPrice('chocolate', customizerState.size);
   }
 }
 
-function handleSecondFlavorChange() {
-  if (selectedSize === 'GG' && flavorCount === 3) {
-    populateFlavorDropdowns();
-  }
+function selectCrust(crustId) {
+  const names = {
+    'catupiry': 'Borda Catupiry',
+    'cheddar': 'Borda Cheddar',
+    'nenhuma': 'Tradicional (Sem Recheio na Borda)',
+    'chocolate': 'Borda Doce de Chocolate'
+  };
+  
+  const price = getCrustPrice(crustId, customizerState.size);
+
+  customizerState.crust = {
+    id: crustId,
+    name: names[crustId] || 'Borda Catupiry',
+    price: price
+  };
+  
+  renderCrustOptions();
   updateCustomizerTotal();
+}
+
+function toggleQuickNote(text) {
+  const input = document.getElementById('pizzaNotes');
+  if (!input) return;
+
+  let current = input.value.trim();
+  if (current.includes(text)) {
+    current = current.replace(text, '').replace(/,\s*,/g, ',').replace(/^,\s*|,\s*$/g, '').trim();
+  } else {
+    current = current ? `${current}, ${text}` : text;
+  }
+  input.value = current;
+
+  // Atualizar visual dos chips
+  document.querySelectorAll('.quick-chip').forEach(btn => {
+    if (btn.innerText.includes(text)) {
+      btn.classList.toggle('active', input.value.includes(text));
+    }
+  });
+}
+
+function renderCustomizerDrinks() {
+  const container = document.getElementById('customizerDrinksGrid');
+  if (!container) return;
+
+  const cfg = getConfig();
+  const drinks = (typeof MENU_DATA !== 'undefined' && MENU_DATA.bebidas) ? MENU_DATA.bebidas : ((cfg.menu && cfg.menu.bebidas) || []);
+
+  container.innerHTML = drinks.map(d => {
+    const qty = customizerState.drinks[d.id] || 0;
+    const hasQty = qty > 0 ? 'has-qty' : '';
+    const imgHtml = d.image ? `<img src="${d.image}" alt="${d.name}" class="drink-card-img" loading="lazy">` : `<div class="drink-card-icon">${d.icon || '🥤'}</div>`;
+
+    return `
+      <div class="customizer-drink-card ${hasQty}">
+        <div class="drink-card-left">
+          ${imgHtml}
+          <div class="drink-card-info">
+            <div class="drink-card-name">${d.name}</div>
+            <div class="drink-card-price">R$ ${d.price.toFixed(2).replace('.', ',')}</div>
+          </div>
+        </div>
+        <div class="drink-card-qty-ctrl">
+          <button type="button" class="btn-drink-qty" onclick="changeCustomizerDrinkQty('${d.id}', -1)" aria-label="Diminuir"><i class="fa-solid fa-minus"></i></button>
+          <span class="drink-qty-num">${qty}</span>
+          <button type="button" class="btn-drink-qty" onclick="changeCustomizerDrinkQty('${d.id}', 1)" aria-label="Aumentar"><i class="fa-solid fa-plus"></i></button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function changeCustomizerDrinkQty(drinkId, delta) {
+  const current = customizerState.drinks[drinkId] || 0;
+  const next = Math.max(0, current + delta);
+  if (next > 0) {
+    customizerState.drinks[drinkId] = next;
+  } else {
+    delete customizerState.drinks[drinkId];
+  }
+  renderCustomizerDrinks();
+  updateCustomizerTotal();
+}
+
+function getCalculatedPizzaPrice() {
+  const count = customizerState.flavorCount;
+  const size = customizerState.size;
+  let sum = 0;
+
+  for (let i = 0; i < count; i++) {
+    const p = customizerState.flavors[i] || customizerState.flavors[0];
+    sum += (p.prices && p.prices[size] != null ? p.prices[size] : 0);
+  }
+
+  const avgPrice = sum / count;
+  return avgPrice + (customizerState.crust.price || 0);
+}
+
+function getCalculatedDrinksPrice() {
+  const cfg = getConfig();
+  const drinks = (typeof MENU_DATA !== 'undefined' && MENU_DATA.bebidas) ? MENU_DATA.bebidas : ((cfg.menu && cfg.menu.bebidas) || []);
+  let sum = 0;
+  for (const [drinkId, qty] of Object.entries(customizerState.drinks)) {
+    const d = drinks.find(item => item.id === drinkId);
+    if (d && qty > 0) {
+      sum += (d.price * qty);
+    }
+  }
+  return sum;
+}
+
+function getCalculatedPrice() {
+  return getCalculatedPizzaPrice() + getCalculatedDrinksPrice();
+}
+
+function updateCustomizerTotal() {
+  const total = getCalculatedPrice();
+  const display = document.getElementById('modalTotalPrice');
+  if (display) {
+    display.innerText = `R$ ${total.toFixed(2).replace('.', ',')}`;
+  }
+
+  const summaryEl = document.getElementById('customizerSummaryText');
+  if (summaryEl) {
+    const sizeLabels = { 'P': 'Broto (P)', 'M': 'Média (M)', 'G': 'Grande (G)', 'GG': 'Família (GG)' };
+    const sizeLabel = sizeLabels[customizerState.size] || customizerState.size;
+    const count = customizerState.flavorCount;
+    
+    let flavorDesc = '';
+    if (count === 1) {
+      flavorDesc = customizerState.flavors[0]?.name || '';
+    } else if (count === 2) {
+      flavorDesc = `Meio a Meio: ${customizerState.flavors[0]?.name} + ${customizerState.flavors[1]?.name}`;
+    } else if (count === 3) {
+      flavorDesc = `3 Sabores: ${customizerState.flavors[0]?.name} + ${customizerState.flavors[1]?.name} + ${customizerState.flavors[2]?.name}`;
+    }
+
+    let crustDesc = '';
+    if (customizerState.crust) {
+      if (customizerState.crust.price > 0) {
+        crustDesc = ` • ${customizerState.crust.name} (+R$ ${customizerState.crust.price.toFixed(2).replace('.', ',')})`;
+      } else {
+        crustDesc = ` • ${customizerState.crust.name}`;
+      }
+    }
+
+    const drinksCount = Object.values(customizerState.drinks).reduce((a, b) => a + b, 0);
+    let drinksDesc = drinksCount > 0 ? ` • +${drinksCount} ${drinksCount === 1 ? 'Bebida' : 'Bebidas'}` : '';
+
+    summaryEl.innerHTML = `<strong>${sizeLabel}</strong> • ${flavorDesc}${crustDesc}${drinksDesc}`;
+  }
+}
+
+// =========================================================================
+// SUB-MODAL / GAVETA VISUAL DE TROCA DE SABOR
+// =========================================================================
+function openFlavorPicker(slotIndex) {
+  activePickerSlot = slotIndex;
+  
+  const badge = document.getElementById('pickerTargetBadge');
+  if (badge) {
+    const count = customizerState.flavorCount;
+    if (count === 1) badge.innerText = 'Alterando Sabor da Pizza';
+    else if (count === 2) badge.innerText = `Alterando Metade ${slotIndex + 1} (50%)`;
+    else badge.innerText = `Alterando Sabor ${slotIndex + 1} (1/3)`;
+  }
+
+  const searchInput = document.getElementById('pickerSearchInput');
+  if (searchInput) searchInput.value = '';
+
+  currentPickerCategory = 'all';
+  document.querySelectorAll('.picker-cat-btn').forEach(btn => btn.classList.remove('active'));
+  document.getElementById('pickerCat-all')?.classList.add('active');
+
+  renderFlavorPickerGrid();
+
+  const modal = document.getElementById('flavorPickerModal');
+  if (modal) modal.classList.add('active');
+}
+
+function closeFlavorPickerModal() {
+  const modal = document.getElementById('flavorPickerModal');
+  if (modal) modal.classList.remove('active');
+}
+
+function setPickerCategory(category) {
+  currentPickerCategory = category;
+  document.querySelectorAll('.picker-cat-btn').forEach(btn => btn.classList.remove('active'));
+  document.getElementById(`pickerCat-${category}`)?.classList.add('active');
+  renderFlavorPickerGrid();
+}
+
+function filterPickerFlavors() {
+  renderFlavorPickerGrid();
+}
+
+function renderFlavorPickerGrid() {
+  const container = document.getElementById('flavorPickerGrid');
+  if (!container) return;
+
+  const currentSize = customizerState.size;
+  const currentSlotPizza = customizerState.flavors[activePickerSlot];
+  const query = (document.getElementById('pickerSearchInput')?.value || '').toLowerCase().trim();
+
+  let pizzas = getAllPizzas().filter(p => p.prices && p.prices[currentSize] != null);
+
+  // Filtrar por categoria
+  if (currentPickerCategory !== 'all') {
+    pizzas = pizzas.filter(p => p.category === currentPickerCategory);
+  }
+
+  // Filtrar por busca
+  if (query) {
+    pizzas = pizzas.filter(p => 
+      p.name.toLowerCase().includes(query) || 
+      (p.ingredients && p.ingredients.toLowerCase().includes(query))
+    );
+  }
+
+  // Regra GG: não permitir mais de 1 sabor doce
+  if (currentSize === 'GG' && customizerState.flavorCount >= 2) {
+    const hasOtherSweet = customizerState.flavors.some((p, idx) => idx !== activePickerSlot && p && p.category === 'doce');
+    if (hasOtherSweet) {
+      pizzas = pizzas.filter(p => p.category !== 'doce');
+    }
+  }
+
+  if (pizzas.length === 0) {
+    container.innerHTML = `
+      <div style="text-align: center; padding: 2rem; color: var(--text-muted);">
+        <i class="fa-solid fa-pizza-slice" style="font-size: 2rem; margin-bottom: 0.5rem; color: var(--primary-red);"></i>
+        <p>Nenhum sabor encontrado para a busca.</p>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = pizzas.map(p => {
+    const isSelected = currentSlotPizza && currentSlotPizza.id === p.id;
+    const price = (p.prices[currentSize] || 0).toFixed(2).replace('.', ',');
+    const badge = p.category === 'doce' ? ' 🍰' : (p.category === 'especial' ? ' ⭐' : '');
+
+    return `
+      <div class="flavor-picker-item ${isSelected ? 'active-choice' : ''}" onclick="selectFlavorForSlot('${p.id}')">
+        <div class="picker-item-left">
+          <img src="${p.image}" alt="${p.name}" class="picker-item-img" loading="lazy">
+          <div class="picker-item-info">
+            <h4 class="picker-item-title">${p.name}${badge} ${isSelected ? '<span style="font-size:0.75rem; color:var(--accent-green); font-weight:900;">(Atual)</span>' : ''}</h4>
+            <p class="picker-item-desc">${p.ingredients}</p>
+          </div>
+        </div>
+        <div class="picker-item-price">R$ ${price}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function selectFlavorForSlot(pizzaId) {
+  const pizza = getAllPizzas().find(p => p.id === pizzaId);
+  if (!pizza) return;
+
+  customizerState.flavors[activePickerSlot] = pizza;
+  closeFlavorPickerModal();
+  renderCustomizerUI();
 }
 
 // Global exposure for event handlers
 window.openCustomizer = openCustomizer;
 window.openCustomizerModal = openCustomizer;
+window.closeCustomizerModal = closeCustomizerModal;
 window.setFlavorCount = setFlavorCount;
 window.selectSize = selectSize;
-window.handleSecondFlavorChange = handleSecondFlavorChange;
-
-function getCalculatedPrice() {
-  if (!selectedPizza) return 0;
-  const price1 = selectedPizza.prices[selectedSize] || 0;
-
-  if (flavorCount === 1) {
-    return price1;
-  }
-
-  if (flavorCount === 2) {
-    const select2 = document.getElementById('secondFlavorSelect');
-    const p2Id = select2?.value;
-    const pizza2 = getAllPizzas().find(p => p.id === p2Id);
-    const price2 = pizza2 ? (pizza2.prices[selectedSize] || 0) : price1;
-    // Média aritmética dos 2 sabores
-    return (price1 + price2) / 2;
-  }
-
-  if (flavorCount === 3 && selectedSize === 'GG') {
-    const select2 = document.getElementById('secondFlavorSelect');
-    const select3 = document.getElementById('thirdFlavorSelect');
-    const p2Id = select2?.value;
-    const p3Id = select3?.value;
-    const pizza2 = getAllPizzas().find(p => p.id === p2Id);
-    const pizza3 = getAllPizzas().find(p => p.id === p3Id);
-    const price2 = pizza2 ? (pizza2.prices[selectedSize] || 0) : price1;
-    const price3 = pizza3 ? (pizza3.prices[selectedSize] || 0) : price1;
-    // Média aritmética dos 3 sabores
-    return (price1 + price2 + price3) / 3;
-  }
-
-  return price1;
-}
-
-function updateCustomizerTotal() {
-  const price = getCalculatedPrice();
-  const display = document.getElementById('modalTotalPrice');
-  if (display) {
-    display.innerText = `R$ ${price.toFixed(2).replace('.', ',')}`;
-  }
-}
+window.selectCrust = selectCrust;
+window.toggleQuickNote = toggleQuickNote;
+window.openFlavorPicker = openFlavorPicker;
+window.closeFlavorPickerModal = closeFlavorPickerModal;
+window.setPickerCategory = setPickerCategory;
+window.filterPickerFlavors = filterPickerFlavors;
+window.selectFlavorForSlot = selectFlavorForSlot;
+window.changeCustomizerDrinkQty = changeCustomizerDrinkQty;
 
 // Add Item to Cart
 function addCustomizedPizzaToCart() {
-  if (!selectedPizza) return;
+  const p1 = customizerState.flavors[0];
+  if (!p1) return;
 
-  const notes = document.getElementById('pizzaNotes')?.value.trim() || '';
-  const price = getCalculatedPrice();
+  const notesInput = document.getElementById('pizzaNotes');
+  const userNotes = notesInput ? notesInput.value.trim() : '';
+  const pizzaPrice = getCalculatedPizzaPrice();
+  const size = customizerState.size;
+  const count = customizerState.flavorCount;
 
-  let title = selectedPizza.name;
-  if (flavorCount === 2) {
-    const select2 = document.getElementById('secondFlavorSelect');
-    const p2Id = select2?.value;
-    const pizza2 = getAllPizzas().find(p => p.id === p2Id);
-    if (pizza2) {
-      title = `Meio a Meio: 1/2 ${selectedPizza.name} + 1/2 ${pizza2.name}`;
-    }
-  } else if (flavorCount === 3 && selectedSize === 'GG') {
-    const select2 = document.getElementById('secondFlavorSelect');
-    const select3 = document.getElementById('thirdFlavorSelect');
-    const p2Id = select2?.value;
-    const p3Id = select3?.value;
-    const pizza2 = getAllPizzas().find(p => p.id === p2Id);
-    const pizza3 = getAllPizzas().find(p => p.id === p3Id);
-    const name2 = pizza2 ? pizza2.name : '';
-    const name3 = pizza3 ? pizza3.name : '';
-    title = `3 Sabores: 1/3 ${selectedPizza.name} + 1/3 ${name2} + 1/3 ${name3}`;
+  let title = '';
+  if (count === 1) {
+    title = `Pizza ${p1.name}`;
+  } else if (count === 2) {
+    const p2 = customizerState.flavors[1] || p1;
+    title = `Meio a Meio: 1/2 ${p1.name} + 1/2 ${p2.name}`;
+  } else if (count === 3) {
+    const p2 = customizerState.flavors[1] || p1;
+    const p3 = customizerState.flavors[2] || p1;
+    title = `3 Sabores: 1/3 ${p1.name} + 1/3 ${p2.name} + 1/3 ${p3.name}`;
   }
 
-  const cartItem = {
-    id: Date.now(),
-    pizzaId: selectedPizza.id,
-    title: title,
-    size: selectedSize,
-    notes: notes,
-    price: price,
-    quantity: 1,
-    image: selectedPizza.image
-  };
+  let finalNotes = [];
+  if (customizerState.crust) {
+    if (customizerState.crust.price > 0) {
+      finalNotes.push(`${customizerState.crust.name} (+R$ ${customizerState.crust.price.toFixed(2).replace('.', ',')})`);
+    } else {
+      finalNotes.push(`${customizerState.crust.name}`);
+    }
+  }
+  if (userNotes) {
+    finalNotes.push(userNotes);
+  }
 
-  cart.push(cartItem);
+  // 1. Adicionar Pizza ao Carrinho
+  const pizzaCartItem = {
+    id: Date.now(),
+    pizzaId: p1.id,
+    title: title,
+    size: size,
+    crust: customizerState.crust,
+    notes: finalNotes.join(' | '),
+    price: pizzaPrice,
+    unitPrice: pizzaPrice,
+    quantity: 1,
+    image: p1.image
+  };
+  cart.push(pizzaCartItem);
+
+  // 2. Adicionar Bebidas Selecionadas ao Carrinho
+  const cfg = getConfig();
+  const allDrinks = (typeof MENU_DATA !== 'undefined' && MENU_DATA.bebidas) ? MENU_DATA.bebidas : ((cfg.menu && cfg.menu.bebidas) || []);
+  let drinksAddedCount = 0;
+
+  for (const [drinkId, qty] of Object.entries(customizerState.drinks)) {
+    if (qty > 0) {
+      const drink = allDrinks.find(d => d.id === drinkId);
+      if (drink) {
+        drinksAddedCount += qty;
+        const existing = cart.find(i => i.type === 'bebida' && (i.drinkId === drinkId || i.id === drinkId));
+        if (existing) {
+          existing.quantity += qty;
+          existing.totalPrice = (existing.price || existing.unitPrice || drink.price) * existing.quantity;
+        } else {
+          cart.push({
+            id: 'drink_' + drink.id + '_' + (Date.now() + Math.random()),
+            type: 'bebida',
+            drinkId: drink.id,
+            name: drink.name,
+            title: drink.name,
+            icon: drink.icon,
+            image: drink.image || '',
+            size: 'Unidade',
+            quantity: qty,
+            price: drink.price,
+            unitPrice: drink.price,
+            totalPrice: drink.price * qty
+          });
+        }
+      }
+    }
+  }
+
   saveCart();
   updateCartBadge();
   closeCustomizerModal();
+
+  // Exibir toast chamativo para o cliente
+  const toastMsg = drinksAddedCount > 0 
+    ? `${title} + ${drinksAddedCount} ${drinksAddedCount === 1 ? 'bebida' : 'bebidas'} adicionadas!` 
+    : `${title} adicionada! 🍕`;
+  showCartToast(toastMsg, 'Toque aqui para ver seu pedido e finalizar');
 
   // Highlight cart button
   const cartBtn = document.querySelector('.btn-cart');
@@ -1027,6 +1288,23 @@ function saveCart() {
   localStorage.setItem('arte_delicia_cart', JSON.stringify(cart));
 }
 
+// Toast de Notificação
+function showCartToast(title, subtitle) {
+  const toast = document.getElementById('cartToast');
+  if (!toast) return;
+
+  const tTitle = document.getElementById('toastTitle');
+  const tSub = document.getElementById('toastSubtitle');
+  if (tTitle && title) tTitle.innerText = title;
+  if (tSub && subtitle) tSub.innerText = subtitle;
+
+  toast.classList.add('active');
+  clearTimeout(window.cartToastTimeout);
+  window.cartToastTimeout = setTimeout(() => {
+    toast.classList.remove('active');
+  }, 4500);
+}
+
 // Update Cart Badges & Floating Bar
 function updateCartBadge() {
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -1035,8 +1313,11 @@ function updateCartBadge() {
   const cartCountEl = document.getElementById('cartCount');
   if (cartCountEl) cartCountEl.innerText = totalItems;
 
+  const floatBubbleEl = document.getElementById('floatBubble');
+  if (floatBubbleEl) floatBubbleEl.innerText = totalItems;
+
   const floatCountEl = document.getElementById('floatCount');
-  if (floatCountEl) floatCountEl.innerText = `${totalItems} ${totalItems === 1 ? 'item' : 'itens'}`;
+  if (floatCountEl) floatCountEl.innerText = `${totalItems} ${totalItems === 1 ? 'item no pedido' : 'itens no pedido'}`;
 
   const floatTotalEl = document.getElementById('floatTotal');
   if (floatTotalEl) floatTotalEl.innerText = `R$ ${totalPrice.toFixed(2).replace('.', ',')}`;
@@ -1056,7 +1337,11 @@ function openCartModal() {
   renderCartItems();
   prefillCartFromProfile();
   const modal = document.getElementById('cartModal');
-  if (modal) modal.classList.add('active');
+  if (modal) {
+    modal.classList.add('active');
+    const modalBody = modal.querySelector('.modal-body');
+    if (modalBody) modalBody.scrollTop = 0;
+  }
 }
 
 function closeCartModal() {
