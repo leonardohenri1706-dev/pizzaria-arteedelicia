@@ -1229,12 +1229,18 @@ function addCustomizedPizzaToCart() {
     finalNotes.push(userNotes);
   }
 
+  const selectedFlavors = customizerState.flavors.slice(0, count);
+  const flavorImages = selectedFlavors.map(f => (f && f.image) ? f.image : p1.image);
+
   // 1. Adicionar Pizza ao Carrinho
   const pizzaCartItem = {
     id: Date.now(),
     pizzaId: p1.id,
     title: title,
     size: size,
+    flavorCount: count,
+    flavors: selectedFlavors.map(f => ({ id: f.id, name: f.name, image: f.image })),
+    images: flavorImages,
     crust: customizerState.crust,
     notes: finalNotes.join(' | '),
     price: pizzaPrice,
@@ -1362,6 +1368,66 @@ function closeCartModal() {
   if (modal) modal.classList.remove('active');
 }
 
+// Helper para renderizar a miniatura da pizza (dividida verticalmente se for meio a meio ou 3 sabores)
+function getCartItemThumbnailHtml(item) {
+  if (item.type === 'bebida') {
+    return item.image 
+      ? `<img src="${item.image}" alt="${item.name}" class="cart-item-img" loading="lazy">` 
+      : `<div class="cart-drink-icon"><i class="fa-solid fa-glass-water"></i></div>`;
+  }
+
+  // Verificar se tem imagens divididas
+  let images = (Array.isArray(item.images) && item.images.length > 1) ? item.images : null;
+
+  // Fallback para itens antigos ou criados fora do customizador novo
+  if (!images && (item.flavorCount === 2 || (item.title && item.title.includes('Meio a Meio')))) {
+    const allPizzas = getAllPizzas();
+    if (item.title && item.title.includes('+')) {
+      const parts = item.title.replace('Meio a Meio:', '').split('+').map(s => s.trim().replace(/^1\/2\s*/, '').toLowerCase());
+      const p1 = allPizzas.find(p => p.name.toLowerCase() === parts[0]);
+      const p2 = allPizzas.find(p => p.name.toLowerCase() === parts[1]);
+      if (p1 && p2) images = [p1.image, p2.image];
+    }
+  } else if (!images && (item.flavorCount === 3 || (item.title && item.title.includes('3 Sabores')))) {
+    const allPizzas = getAllPizzas();
+    if (item.title && item.title.includes('+')) {
+      const parts = item.title.replace('3 Sabores:', '').split('+').map(s => s.trim().replace(/^1\/3\s*/, '').toLowerCase());
+      const p1 = allPizzas.find(p => p.name.toLowerCase() === parts[0]);
+      const p2 = allPizzas.find(p => p.name.toLowerCase() === parts[1]);
+      const p3 = allPizzas.find(p => p.name.toLowerCase() === parts[2]);
+      if (p1 && p2 && p3) images = [p1.image, p2.image, p3.image];
+    }
+  }
+
+  // 2 Sabores: Metades Verticais (50% / 50%)
+  if (images && images.length === 2) {
+    return `
+      <div class="cart-item-split-img split-2" title="${item.title}">
+        <div class="split-slice slice-left" style="background-image: url('${images[0]}');"></div>
+        <div class="split-divider"></div>
+        <div class="split-slice slice-right" style="background-image: url('${images[1]}');"></div>
+      </div>
+    `;
+  } 
+  
+  // 3 Sabores: 3 Recortes Verticais (33.3% / 33.3% / 33.3%)
+  else if (images && images.length >= 3) {
+    return `
+      <div class="cart-item-split-img split-3" title="${item.title}">
+        <div class="split-slice slice-1" style="background-image: url('${images[0]}');"></div>
+        <div class="split-divider"></div>
+        <div class="split-slice slice-2" style="background-image: url('${images[1]}');"></div>
+        <div class="split-divider"></div>
+        <div class="split-slice slice-3" style="background-image: url('${images[2]}');"></div>
+      </div>
+    `;
+  }
+
+  // Sabor único
+  const singleImg = (images && images[0]) || item.image || 'assets/logo.png';
+  return `<img src="${singleImg}" alt="${item.title || 'Pizza'}" class="cart-item-img" loading="lazy">`;
+}
+
 function renderCartItems() {
   const container = document.getElementById('cartItemsList');
   if (!container) return;
@@ -1386,13 +1452,15 @@ function renderCartItems() {
   };
 
   container.innerHTML = cart.map((item, index) => {
+    const thumbHtml = getCartItemThumbnailHtml(item);
+
     // --- BEBIDA ---
     if (item.type === 'bebida') {
       const unitPrice = (item.unitPrice || 0).toFixed(2).replace('.', ',');
       const total = (item.totalPrice || item.unitPrice * item.quantity).toFixed(2).replace('.', ',');
       return `
         <div class="cart-item-card">
-          ${item.image ? `<img src="${item.image}" alt="${item.name}" class="cart-item-img">` : `<div class="cart-drink-icon"><i class="fa-solid fa-glass-water"></i></div>`}
+          ${thumbHtml}
           <div class="cart-item-details">
             <div class="cart-item-name">${item.name}</div>
             <div class="cart-item-meta"><span class="badge-size">Bebida</span></div>
@@ -1411,13 +1479,13 @@ function renderCartItems() {
     }
 
     // --- PIZZA ---
-    const sizeLabels = { 'P': 'Broto (4 fatias)', 'M': 'Média (6 fatias)', 'G': 'Grande (8 fatias)', 'GG': 'Família (12 fatias)' };
-    const sizeName = sizeLabels[item.size] || `Tamanho ${item.size}`;
+    const sizeLabelsMap = { 'P': 'Broto (4 fatias)', 'M': 'Média (6 fatias)', 'G': 'Grande (8 fatias)', 'GG': 'Família (12 fatias)' };
+    const sizeName = sizeLabelsMap[item.size] || `Tamanho ${item.size}`;
     const unitPrice = (item.price || item.unitPrice || 0).toFixed(2).replace('.', ',');
     const itemTotal = ((item.price || item.unitPrice || 0) * item.quantity).toFixed(2).replace('.', ',');
     return `
       <div class="cart-item-card">
-        <img src="${item.image}" alt="${item.title}" class="cart-item-img">
+        ${thumbHtml}
         <div class="cart-item-details">
           <div class="cart-item-name">${item.title}</div>
           <div class="cart-item-meta">
@@ -2429,9 +2497,43 @@ function prefillCartFromProfile() {
   }
 }
 
-// Inicializar badge ao carregar a página
+// =========================================================================
+// MÁSCARA DINÂMICA DE TELEFONE (ACEITA QUALQUER DDD LIVREMENTE)
+// =========================================================================
+function formatPhoneValue(value) {
+  if (!value) return '';
+  let digits = value.replace(/\D/g, '');
+  if (digits.length > 11) digits = digits.substring(0, 11);
+  if (digits.length === 0) return '';
+  if (digits.length <= 2) return `(${digits}`;
+  if (digits.length <= 6) return `(${digits.substring(0, 2)}) ${digits.substring(2)}`;
+  if (digits.length <= 10) return `(${digits.substring(0, 2)}) ${digits.substring(2, 6)}-${digits.substring(6)}`;
+  return `(${digits.substring(0, 2)}) ${digits.substring(2, 7)}-${digits.substring(7, 11)}`;
+}
+
+function attachPhoneMask(input) {
+  if (!input) return;
+  input.addEventListener('input', (e) => {
+    const cursor = e.target.selectionStart;
+    const oldLength = e.target.value.length;
+    e.target.value = formatPhoneValue(e.target.value);
+  });
+  input.addEventListener('blur', (e) => {
+    e.target.value = formatPhoneValue(e.target.value);
+  });
+}
+
+function initPhoneMasks() {
+  ['cartCustomerPhone', 'profilePhone', 'resPhone'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) attachPhoneMask(el);
+  });
+}
+
+// Inicializar badge e máscaras ao carregar a página
 document.addEventListener('DOMContentLoaded', () => {
   updateUserNavBadge();
+  initPhoneMasks();
 
   // Listener para ativar som do vídeo ao clicar
   const video = document.getElementById('aboutVideoPlayer');

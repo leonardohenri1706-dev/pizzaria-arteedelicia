@@ -2017,24 +2017,64 @@ body {
 }
 
 .cart-item-img {
-  width: 54px;
-  height: 54px;
-  border-radius: 10px;
+  width: 56px;
+  height: 56px;
+  min-width: 56px;
+  border-radius: 12px;
   object-fit: cover;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+/* Miniatura com Recorte Vertical de Metades / 3 Sabores */
+.cart-item-split-img {
+  width: 56px;
+  height: 56px;
+  min-width: 56px;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+  border: 1.5px solid rgba(229, 169, 60, 0.4);
+  background: #110f0d;
+}
+
+.cart-item-split-img .split-slice {
+  height: 100%;
+  flex: 1;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+  transition: transform 0.4s ease;
+}
+
+.cart-item-split-img .split-divider {
+  width: 1.5px;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.9);
+  z-index: 2;
+  flex-shrink: 0;
+}
+
+.cart-item-split-img:hover .split-slice {
+  transform: scale(1.12);
 }
 
 .cart-drink-icon {
-  width: 54px;
-  height: 54px;
-  min-width: 54px;
-  border-radius: 10px;
+  width: 56px;
+  height: 56px;
+  min-width: 56px;
+  border-radius: 12px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(229, 169, 60, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.8rem;
+  font-size: 1.4rem;
+  color: var(--accent-yellow);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
@@ -3053,18 +3093,20 @@ body {
   position: fixed;
   bottom: calc(1.2rem + env(safe-area-inset-bottom, 0px));
   left: 50%;
-  transform: translateX(-50%) translateY(120px);
+  transform: translateX(-50%) translateY(140px);
   width: calc(100% - 1.8rem);
-  max-width: 520px;
-  background: linear-gradient(135deg, #1f242d, #14171d);
+  max-width: 540px;
+  background: linear-gradient(135deg, rgba(31, 36, 45, 0.98), rgba(20, 23, 29, 0.98));
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   border: 1.5px solid var(--accent-gold);
   border-radius: 50px;
-  padding: 0.75rem 1.1rem;
+  padding: 0.75rem 1.2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  z-index: 999;
-  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.85), 0 0 25px rgba(229, 169, 60, 0.35);
+  z-index: 99999;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.9), 0 0 25px rgba(229, 169, 60, 0.35);
   cursor: pointer;
   opacity: 0;
   pointer-events: none;
@@ -3178,22 +3220,25 @@ body {
 }
 
 /* =========================================================================
-   TOAST NOTIFICATION DE ITEM ADICIONADO
+   TOAST NOTIFICATION DE ITEM ADICIONADO (SUPER VISÍVEL EM QUALQUER TELA)
    ========================================================================= */
 .cart-toast-notification {
   position: fixed;
-  top: 1.2rem;
+  top: calc(1rem + env(safe-area-inset-top, 0px));
   left: 50%;
-  transform: translateX(-50%) translateY(-120px);
-  background: #1a1e27;
+  transform: translateX(-50%) translateY(-140px);
+  background: rgba(26, 30, 39, 0.98);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   border: 1.5px solid var(--accent-green);
   border-radius: 50px;
-  padding: 0.65rem 1.2rem;
+  padding: 0.75rem 1.3rem;
   display: flex;
   align-items: center;
-  gap: 12px;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(47, 158, 68, 0.3);
-  z-index: 10000;
+  justify-content: space-between;
+  gap: 14px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.85), 0 0 25px rgba(47, 158, 68, 0.35);
+  z-index: 999999;
   opacity: 0;
   pointer-events: none;
   transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
